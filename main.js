@@ -2388,7 +2388,7 @@ var require_jszip_min = __commonJS({
 // main.ts
 var main_exports = {};
 __export(main_exports, {
-  default: () => ZoteroWordIntegration
+  default: () => ZoteroFootnotes
 });
 module.exports = __toCommonJS(main_exports);
 var import_obsidian8 = require("obsidian");
@@ -2701,7 +2701,7 @@ function t(settingsOrLang, key, vars) {
 }
 function getAppSettings(app) {
   var _a, _b, _c;
-  return (_c = (_b = (_a = app == null ? void 0 : app.plugins) == null ? void 0 : _a.plugins) == null ? void 0 : _b["zotero-word-integration"]) == null ? void 0 : _c.settings;
+  return (_c = (_b = (_a = app == null ? void 0 : app.plugins) == null ? void 0 : _a.plugins) == null ? void 0 : _b["zotero-footnotes"]) == null ? void 0 : _c.settings;
 }
 function appT(app, key, vars) {
   return t(getAppSettings(app) || DEFAULT_SETTINGS, key, vars);
@@ -2726,7 +2726,7 @@ var ZoteroSettingTab = class extends import_obsidian.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Zotero Word Integration" });
+    containerEl.createEl("h2", { text: "Zotero Footnotes" });
     containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.interface") });
     new import_obsidian.Setting(containerEl).setName(t(this.plugin.settings, "settings.interface")).setDesc(t(this.plugin.settings, "settings.interfaceDesc")).addDropdown((dd) => {
       dd.addOption("zh", t(this.plugin.settings, "lang.zh"));
@@ -3051,7 +3051,7 @@ var ZoteroAPI = class {
     if (!keys.length) return map;
     const sqlite = await this.locateZoteroSQLite();
     if (!sqlite) return map;
-    const tmpDir = path3.join(os2.tmpdir(), "zotero-word-integration-db");
+    const tmpDir = path3.join(os2.tmpdir(), "zotero-footnotes-db");
     const tmpDb = path3.join(tmpDir, "zotero.sqlite");
     const tmpJournal = path3.join(tmpDir, "zotero.sqlite-journal");
     try {
@@ -4722,7 +4722,7 @@ function mountLocatorEditor(container, spec, target) {
   });
 }
 async function applyLocatorEdit(spec, locator) {
-  const plugin = spec.app.plugins.plugins["zotero-word-integration"];
+  const plugin = spec.app.plugins.plugins["zotero-footnotes"];
   const view = spec.app.workspace.getActiveViewOfType(import_obsidian5.MarkdownView);
   const editor = view == null ? void 0 : view.editor;
   if (!plugin || !editor) {
@@ -5149,7 +5149,7 @@ var ZOTERO_UNLINK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
   <path d="M7 14H5a3 3 0 0 1 0-6h3"/>
   <path d="M16 10h3a3 3 0 0 1 0 6h-3"/>
 </svg>`;
-var ZoteroWordIntegration = class extends import_obsidian8.Plugin {
+var ZoteroFootnotes = class extends import_obsidian8.Plugin {
   constructor() {
     super(...arguments);
     this.itemCache = /* @__PURE__ */ new Map();
