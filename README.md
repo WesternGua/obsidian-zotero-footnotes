@@ -356,6 +356,7 @@
 ### 已知前提与限制
 
 - 仅支持桌面端 Obsidian
+- 本插件目前是在 macOS 环境下开发和配置的；Windows 及其他操作系统理论上可能可用，但我暂时无法保证都能完美运行
 - 使用插入/刷新功能时，建议保持 Zotero 运行中
 - Better BibTeX 是必需依赖
 - Word 导出依赖 Pandoc
@@ -658,6 +659,7 @@ This package intentionally does **not** include:
 ## Constraints and assumptions
 
 - Desktop only
+- This plugin is currently developed and configured on macOS; it may also work on Windows or other operating systems, but I cannot yet guarantee perfect behavior across all platforms
 - Zotero should be running for insert/refresh workflows
 - Better BibTeX is required
 - Word export requires Pandoc
