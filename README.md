@@ -8,14 +8,14 @@
 
 ### 1. 切换 Word 风格脚注显示 / Toggle Word-style footnote display
 
-![Word-style footnotes in editor](assets/screenshots/preview-word-style-footnotes-editor.png)
+![image-20260428220530174](assets/screenshots/image-20260428220530174.png)
 
 > 在 Obsidian 编辑器中以 Word 风格上标显示脚注编号。  
 > Word-style superscript footnote markers rendered directly inside the Obsidian editor.
 
 ### 2. 插入引用 / Insert citations with Zotero's native picker
 
-![Native Zotero picker](assets/screenshots/preview-native-zotero-picker.png)
+![image-20260428220612104](assets/screenshots/image-20260428220612104.png)
 
 > 点击功能区的“插入引用”后，插件会优先调用 Zotero 原生引文选择器；支持输入页码、段落等 locator。若原生选择器不可用，插件会回退到插件内搜索面板。  
 > After you click “Insert citation”, the plugin first calls Zotero's native citation picker; page, paragraph, and similar locators are supported. If the native picker is unavailable, the plugin falls back to the in-plugin search modal.
@@ -27,35 +27,35 @@
 
 ### 4. 文档级引用首选项 / Document-wide citation preferences
 
-![Document preferences](assets/screenshots/preview-document-preferences.png)
+![image-20260428220634709](assets/screenshots/image-20260428220634709.png)
 
 > 可以对当前文档统一修改引用样式和引用模式；“尾注模式（正文只显示编号）”和“脚注模式（^[引用文本]）”均可直接切换。  
 > Update citation style and citation mode for the whole document at once; both “endnote mode (number only in the main text)” and “footnote mode (^[citation text])” are available.
 
 ### 5. 悬停查看脚注并快速改页码 / Hover preview and quick locator editing
 
-![Footnote hover popover](assets/screenshots/preview-footnote-hover-locator.png)
+![image-20260428220654845](assets/screenshots/image-20260428220654845.png)
 
 > 悬停脚注编号即可查看完整内容，并可直接修改 locator。  
 > Hover a footnote marker to preview the full note and edit its locator in place.
 
 ### 6. 插件设置：连接、样式与显示 / Settings: connection, styles, and display
 
-![General settings](assets/screenshots/preview-settings-general.png)
+![image-20260428220955975](assets/screenshots/image-20260428220955975.png)
 
 > 设置页可检查 Zotero 连接状态，并配置语言、默认样式、引用模式与显示选项。  
 > The settings tab exposes connection status, interface language, default style, citation mode, and display options.
 
 ### 7. 插件设置：Pandoc 导出 / Settings: Pandoc export
 
-![Pandoc export settings](assets/screenshots/preview-settings-pandoc-export.png)
+![image-20260428221011563](assets/screenshots/image-20260428221011563.png)
 
 > 可配置 Pandoc 路径、额外参数和固定导出目录。  
 > Configure the Pandoc executable, extra flags, and a fixed export directory.
 
 ### 8. 导出的 Word 脚注效果 / Exported Word document with footnotes
 
-![Exported Word footnotes](assets/screenshots/preview-exported-word-footnotes.png)
+![image-20260428221102795](assets/screenshots/image-20260428221102795.png)
 
 > 导出的 `.docx` 文档会保留已插入的脚注编号与脚注正文，便于直接进入 Word 继续校对和交付。  
 > The exported `.docx` preserves inserted footnote markers and note text, so you can continue proofreading and delivery work directly in Word.
