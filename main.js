@@ -2388,7 +2388,7 @@ var require_jszip_min = __commonJS({
 // main.ts
 var main_exports = {};
 __export(main_exports, {
-  default: () => ZoteroFootnotes
+  default: () => ZoteroWordIntegration
 });
 module.exports = __toCommonJS(main_exports);
 var import_obsidian8 = require("obsidian");
@@ -5149,7 +5149,7 @@ var ZOTERO_UNLINK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
   <path d="M7 14H5a3 3 0 0 1 0-6h3"/>
   <path d="M16 10h3a3 3 0 0 1 0 6h-3"/>
 </svg>`;
-var ZoteroFootnotes = class extends import_obsidian8.Plugin {
+var ZoteroWordIntegration = class extends import_obsidian8.Plugin {
   constructor() {
     super(...arguments);
     this.itemCache = /* @__PURE__ */ new Map();
