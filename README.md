@@ -380,6 +380,54 @@
 
 It supports inserting citations, showing Word-style footnote markers, refreshing all managed citations, switching citation styles for an entire document, unlinking plugin metadata, and exporting Markdown to `.docx`.
 
+## Screenshots
+
+### 1. Toggle Word-style footnote display
+
+![Word-style footnotes in editor](assets/screenshots/preview-word-style-footnotes-editor.png)
+
+> Word-style superscript footnote markers rendered directly inside the Obsidian editor.
+
+### 2. Insert citations with Zotero's native picker
+
+![Native Zotero picker](assets/screenshots/preview-native-zotero-picker.png)
+
+> After you click “Insert citation”, the plugin first calls Zotero's native citation picker; page, paragraph, and similar locators are supported. If the native picker is unavailable, the plugin falls back to the in-plugin search modal.
+
+### 3. Refresh all citations
+
+> Re-fetch citation data from Zotero with one click and update footnotes, endnotes, and the managed bibliography in the current document.
+
+### 4. Document-wide citation preferences
+
+![Document preferences](assets/screenshots/preview-document-preferences.png)
+
+> Update citation style and citation mode for the whole document at once; both “endnote mode (number only in the main text)” and “footnote mode (`^[citation text]`)” are available.
+
+### 5. Hover preview and quick locator editing
+
+![Footnote hover popover](assets/screenshots/preview-footnote-hover-locator.png)
+
+> Hover a footnote marker to preview the full note and edit its locator in place.
+
+### 6. Settings: connection, styles, and display
+
+![General settings](assets/screenshots/preview-settings-general.png)
+
+> The settings tab exposes connection status, interface language, default style, citation mode, and display options.
+
+### 7. Settings: Pandoc export
+
+![Pandoc export settings](assets/screenshots/preview-settings-pandoc-export.png)
+
+> Configure the Pandoc executable, extra flags, and a fixed export directory.
+
+### 8. Exported Word document with footnotes
+
+![Exported Word footnotes](assets/screenshots/preview-exported-word-footnotes.png)
+
+> The exported `.docx` preserves inserted footnote markers and note text, so you can continue proofreading and delivery work directly in Word.
+
 ## Key features
 
 - Insert or edit citations
