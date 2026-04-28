@@ -1,4 +1,4 @@
-# Zotero Footnotes
+# Zotero Citations
 
 一个面向 Obsidian 桌面端的 Zotero 引用管理插件：支持插入引用、切换 Word 风格脚注显示、刷新所有引用、批量修改引用格式、解除引用链接，并通过 Pandoc 导出为 Word（`.docx`）。
 
@@ -66,7 +66,7 @@
 
 ### 插件定位
 
-`Zotero Footnotes` 是一个桌面端 Obsidian 插件，目标是把 **Zotero 引用工作流**、**Obsidian 写作工作流** 和 **Word 导出工作流** 串起来：
+`Zotero Citations` 是一个桌面端 Obsidian 插件，目标是把 **Zotero 引用工作流**、**Obsidian 写作工作流** 和 **Word 导出工作流** 串起来：
 
 - 在 Obsidian 里插入和维护 Zotero 引用
 - 让脚注/尾注在编辑器中更接近 Word 的阅读体验
@@ -127,13 +127,13 @@
 
 1. 打开你的 Obsidian Vault。
 2. 进入插件目录：
-   - macOS / Linux: `.obsidian/plugins/zotero-footnotes/`
-   - Windows: `.obsidian\plugins\zotero-footnotes\`
+   - macOS / Linux: `.obsidian/plugins/zotero-citations/`
+   - Windows: `.obsidian\plugins\zotero-citations\`
 3. 将本仓库中的以下文件复制进去：
    - `main.js`
    - `manifest.json`
 4. 重新加载 Obsidian。
-5. 在 **社区插件** 中启用 `Zotero Footnotes`。
+5. 在 **社区插件** 中启用 `Zotero Citations`。
 
 #### 方法二：直接使用本仓库作为发布源
 
@@ -148,7 +148,7 @@
 
 ### 配置方式
 
-进入 **Settings → Community plugins → Zotero Footnotes** 后，可以配置：
+进入 **Settings → Community plugins → Zotero Citations** 后，可以配置：
 
 #### 1. 界面语言
 - 中文 / English
@@ -371,7 +371,7 @@
 
 ## What this plugin does
 
-`Zotero Footnotes` is an Obsidian desktop plugin that connects three workflows in one place:
+`Zotero Citations` is an Obsidian desktop plugin that connects three workflows in one place:
 
 - Zotero citation management
 - Obsidian writing and editing
@@ -434,13 +434,13 @@ Before using the plugin, install:
 
 1. Open your Obsidian vault.
 2. Go to:
-   - macOS / Linux: `.obsidian/plugins/zotero-footnotes/`
-   - Windows: `.obsidian\\plugins\\zotero-footnotes\\`
+   - macOS / Linux: `.obsidian/plugins/zotero-citations/`
+   - Windows: `.obsidian\\plugins\\zotero-citations\\`
 3. Copy these files from this repository into that folder:
    - `main.js`
    - `manifest.json`
 4. Reload Obsidian.
-5. Enable `Zotero Footnotes` in **Community plugins**.
+5. Enable `Zotero Citations` in **Community plugins**.
 
 ### Suggested repository contents for GitHub releases
 
@@ -455,7 +455,7 @@ If you want to publish releases from GitHub, keep these files in the repo:
 
 ## Configuration
 
-Open **Settings → Community plugins → Zotero Footnotes**.
+Open **Settings → Community plugins → Zotero Citations**.
 
 You can configure:
 

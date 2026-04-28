@@ -2701,7 +2701,7 @@ function t(settingsOrLang, key, vars) {
 }
 function getAppSettings(app) {
   var _a, _b, _c;
-  return (_c = (_b = (_a = app == null ? void 0 : app.plugins) == null ? void 0 : _a.plugins) == null ? void 0 : _b["zotero-footnotes"]) == null ? void 0 : _c.settings;
+  return (_c = (_b = (_a = app == null ? void 0 : app.plugins) == null ? void 0 : _a.plugins) == null ? void 0 : _b["zotero-citations"]) == null ? void 0 : _c.settings;
 }
 function appT(app, key, vars) {
   return t(getAppSettings(app) || DEFAULT_SETTINGS, key, vars);
@@ -2726,7 +2726,7 @@ var ZoteroSettingTab = class extends import_obsidian.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Zotero Footnotes" });
+    containerEl.createEl("h2", { text: "Zotero Citations" });
     containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.interface") });
     new import_obsidian.Setting(containerEl).setName(t(this.plugin.settings, "settings.interface")).setDesc(t(this.plugin.settings, "settings.interfaceDesc")).addDropdown((dd) => {
       dd.addOption("zh", t(this.plugin.settings, "lang.zh"));
@@ -3051,7 +3051,7 @@ var ZoteroAPI = class {
     if (!keys.length) return map;
     const sqlite = await this.locateZoteroSQLite();
     if (!sqlite) return map;
-    const tmpDir = path3.join(os2.tmpdir(), "zotero-footnotes-db");
+    const tmpDir = path3.join(os2.tmpdir(), "zotero-citations-db");
     const tmpDb = path3.join(tmpDir, "zotero.sqlite");
     const tmpJournal = path3.join(tmpDir, "zotero.sqlite-journal");
     try {
@@ -4722,7 +4722,7 @@ function mountLocatorEditor(container, spec, target) {
   });
 }
 async function applyLocatorEdit(spec, locator) {
-  const plugin = spec.app.plugins.plugins["zotero-footnotes"];
+  const plugin = spec.app.plugins.plugins["zotero-citations"];
   const view = spec.app.workspace.getActiveViewOfType(import_obsidian5.MarkdownView);
   const editor = view == null ? void 0 : view.editor;
   if (!plugin || !editor) {
