@@ -1,4 +1,4 @@
-# Zotero Word Integration
+# Zotero Footnotes
 
 一个面向 Obsidian 桌面端的 Zotero 引用管理插件：支持插入引用、切换 Word 风格脚注显示、刷新所有引用、批量修改引用格式、解除引用链接，并通过 Pandoc 导出为 Word（`.docx`）。
 
@@ -66,7 +66,7 @@
 
 ### 插件定位
 
-`Zotero Word Integration` 是一个桌面端 Obsidian 插件，目标是把 **Zotero 引用工作流**、**Obsidian 写作工作流** 和 **Word 导出工作流** 串起来：
+`Zotero Footnotes` 是一个桌面端 Obsidian 插件，目标是把 **Zotero 引用工作流**、**Obsidian 写作工作流** 和 **Word 导出工作流** 串起来：
 
 - 在 Obsidian 里插入和维护 Zotero 引用
 - 让脚注/尾注在编辑器中更接近 Word 的阅读体验
@@ -127,13 +127,13 @@
 
 1. 打开你的 Obsidian Vault。
 2. 进入插件目录：
-   - macOS / Linux: `.obsidian/plugins/zotero-word-integration/`
-   - Windows: `.obsidian\plugins\zotero-word-integration\`
+   - macOS / Linux: `.obsidian/plugins/zotero-footnotes/`
+   - Windows: `.obsidian\plugins\zotero-footnotes\`
 3. 将本仓库中的以下文件复制进去：
    - `main.js`
    - `manifest.json`
 4. 重新加载 Obsidian。
-5. 在 **社区插件** 中启用 `Zotero Word Integration`。
+5. 在 **社区插件** 中启用 `Zotero Footnotes`。
 
 #### 方法二：直接使用本仓库作为发布源
 
@@ -148,7 +148,7 @@
 
 ### 配置方式
 
-进入 **Settings → Community plugins → Zotero Word Integration** 后，可以配置：
+进入 **Settings → Community plugins → Zotero Footnotes** 后，可以配置：
 
 #### 1. 界面语言
 - 中文 / English
@@ -342,9 +342,9 @@
 - `main.js`：插件主文件
 - `manifest.json`：Obsidian 插件清单
 - `versions.json`：版本兼容声明
-- `LICENSE`：MIT 许可证
 - `README.md`：中英双语说明
 - `CHANGELOG.md`：更新记录
+- `CONTRIBUTORS.md`：贡献者信息
 - `THIRD_PARTY_NOTICES.md`：第三方依赖说明
 - `assets/screenshots/`：README 使用的真实截图
 
@@ -356,7 +356,6 @@
 ### 已知前提与限制
 
 - 仅支持桌面端 Obsidian
-- 本插件目前是在 macOS 环境下开发和配置的；Windows 及其他操作系统理论上可能可用，但我暂时无法保证都能完美运行
 - 使用插入/刷新功能时，建议保持 Zotero 运行中
 - Better BibTeX 是必需依赖
 - Word 导出依赖 Pandoc
@@ -372,61 +371,13 @@
 
 ## What this plugin does
 
-`Zotero Word Integration` is an Obsidian desktop plugin that connects three workflows in one place:
+`Zotero Footnotes` is an Obsidian desktop plugin that connects three workflows in one place:
 
 - Zotero citation management
 - Obsidian writing and editing
 - Word export through Pandoc
 
 It supports inserting citations, showing Word-style footnote markers, refreshing all managed citations, switching citation styles for an entire document, unlinking plugin metadata, and exporting Markdown to `.docx`.
-
-## Screenshots
-
-### 1. Toggle Word-style footnote display
-
-![Word-style footnotes in editor](assets/screenshots/preview-word-style-footnotes-editor.png)
-
-> Word-style superscript footnote markers rendered directly inside the Obsidian editor.
-
-### 2. Insert citations with Zotero's native picker
-
-![Native Zotero picker](assets/screenshots/preview-native-zotero-picker.png)
-
-> After you click “Insert citation”, the plugin first calls Zotero's native citation picker; page, paragraph, and similar locators are supported. If the native picker is unavailable, the plugin falls back to the in-plugin search modal.
-
-### 3. Refresh all citations
-
-> Re-fetch citation data from Zotero with one click and update footnotes, endnotes, and the managed bibliography in the current document.
-
-### 4. Document-wide citation preferences
-
-![Document preferences](assets/screenshots/preview-document-preferences.png)
-
-> Update citation style and citation mode for the whole document at once; both “endnote mode (number only in the main text)” and “footnote mode (`^[citation text]`)” are available.
-
-### 5. Hover preview and quick locator editing
-
-![Footnote hover popover](assets/screenshots/preview-footnote-hover-locator.png)
-
-> Hover a footnote marker to preview the full note and edit its locator in place.
-
-### 6. Settings: connection, styles, and display
-
-![General settings](assets/screenshots/preview-settings-general.png)
-
-> The settings tab exposes connection status, interface language, default style, citation mode, and display options.
-
-### 7. Settings: Pandoc export
-
-![Pandoc export settings](assets/screenshots/preview-settings-pandoc-export.png)
-
-> Configure the Pandoc executable, extra flags, and a fixed export directory.
-
-### 8. Exported Word document with footnotes
-
-![Exported Word footnotes](assets/screenshots/preview-exported-word-footnotes.png)
-
-> The exported `.docx` preserves inserted footnote markers and note text, so you can continue proofreading and delivery work directly in Word.
 
 ## Key features
 
@@ -483,13 +434,13 @@ Before using the plugin, install:
 
 1. Open your Obsidian vault.
 2. Go to:
-   - macOS / Linux: `.obsidian/plugins/zotero-word-integration/`
-   - Windows: `.obsidian\\plugins\\zotero-word-integration\\`
+   - macOS / Linux: `.obsidian/plugins/zotero-footnotes/`
+   - Windows: `.obsidian\\plugins\\zotero-footnotes\\`
 3. Copy these files from this repository into that folder:
    - `main.js`
    - `manifest.json`
 4. Reload Obsidian.
-5. Enable `Zotero Word Integration` in **Community plugins**.
+5. Enable `Zotero Footnotes` in **Community plugins**.
 
 ### Suggested repository contents for GitHub releases
 
@@ -504,7 +455,7 @@ If you want to publish releases from GitHub, keep these files in the repo:
 
 ## Configuration
 
-Open **Settings → Community plugins → Zotero Word Integration**.
+Open **Settings → Community plugins → Zotero Footnotes**.
 
 You can configure:
 
@@ -693,9 +644,9 @@ This package includes:
 - `main.js` — plugin runtime file
 - `manifest.json` — Obsidian plugin manifest
 - `versions.json` — version compatibility mapping
-- `LICENSE` — MIT license
 - `README.md` — bilingual documentation
 - `CHANGELOG.md` — release notes
+- `CONTRIBUTORS.md` — contributor information
 - `THIRD_PARTY_NOTICES.md` — third-party dependency notes
 - `assets/screenshots/` — real screenshots used by the README
 
@@ -707,7 +658,6 @@ This package intentionally does **not** include:
 ## Constraints and assumptions
 
 - Desktop only
-- This plugin is currently developed and configured on macOS; it may also work on Windows or other operating systems, but I cannot yet guarantee perfect behavior across all platforms
 - Zotero should be running for insert/refresh workflows
 - Better BibTeX is required
 - Word export requires Pandoc
