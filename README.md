@@ -342,9 +342,9 @@
 - `main.js`：插件主文件
 - `manifest.json`：Obsidian 插件清单
 - `versions.json`：版本兼容声明
+- `LICENSE`：MIT 许可证
 - `README.md`：中英双语说明
 - `CHANGELOG.md`：更新记录
-- `CONTRIBUTORS.md`：贡献者信息
 - `THIRD_PARTY_NOTICES.md`：第三方依赖说明
 - `assets/screenshots/`：README 使用的真实截图
 
@@ -645,9 +645,9 @@ This package includes:
 - `main.js` — plugin runtime file
 - `manifest.json` — Obsidian plugin manifest
 - `versions.json` — version compatibility mapping
+- `LICENSE` — MIT license
 - `README.md` — bilingual documentation
 - `CHANGELOG.md` — release notes
-- `CONTRIBUTORS.md` — contributor information
 - `THIRD_PARTY_NOTICES.md` — third-party dependency notes
 - `assets/screenshots/` — real screenshots used by the README
 
