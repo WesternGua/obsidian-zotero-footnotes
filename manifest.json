@@ -3,7 +3,7 @@
   "name": "Zotero Citations",
   "version": "0.1.0",
   "minAppVersion": "1.0.0",
-  "description": "Zotero citation management with Word export via Pandoc",
+  "description": "Zotero citation management with Word export via Pandoc.",
   "author": "WesternGua",
   "authorUrl": "",
   "isDesktopOnly": true
