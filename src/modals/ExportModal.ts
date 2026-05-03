@@ -17,27 +17,20 @@ export class ExportModal extends Modal {
 
   onOpen(): void {
     const { contentEl } = this;
-    contentEl.createEl("h2", { text: appT(this.app, "export.chooseLocation") });
+    contentEl.createEl("h2", { text: appT(this.app, "export.chooseLocation"), cls: "zotero-modal-title" });
     contentEl.createEl("p", {
       text: appT(this.app, "export.pathHint"),
       cls: "zotero-export-hint",
     });
 
-    this.input = contentEl.createEl("input", { type: "text" });
+    this.input = contentEl.createEl("input", { type: "text", cls: "zotero-export-input" });
     this.input.value = this.suggestedPath;
-    this.input.style.width = "100%";
-    this.input.style.marginBottom = "12px";
-    this.input.style.padding = "6px 10px";
-    this.input.style.boxSizing = "border-box";
     this.input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") this.doConfirm();
       if (e.key === "Escape") this.close();
     });
 
     const btnRow = contentEl.createDiv({ cls: "zotero-btn-row" });
-    btnRow.style.display = "flex";
-    btnRow.style.justifyContent = "flex-end";
-    btnRow.style.gap = "8px";
 
     const cancel = btnRow.createEl("button", { text: appT(this.app, "common.cancel") });
     cancel.addEventListener("click", () => this.close());

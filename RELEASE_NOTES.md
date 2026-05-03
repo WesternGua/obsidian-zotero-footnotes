@@ -1,21 +1,21 @@
-# Zotero Citations v0.2.0
+# Zotero Citations v0.2.1
 
-## 新功能
+## 官方规范对齐 / Compliance
 
-- **动态 CSL 样式读取** — 文档首选项窗口自动扫描 Zotero 已安装的所有 CSL 样式，支持搜索过滤和刷新
-- **标题栏按钮独立控制** — 6 个快捷图标可在设置中单独开关，按需定制工作区
-- **参考书目格式优化** — 自动添加一级标题 + 引用块，导出 Word 时无缩进、两端对齐
+- **命令与文档同步** — 命令面板名称、README 与发布说明不再保留错误的手工前缀说法
+- **样式合规化** — 静态内联样式迁移到 `styles.css`，状态色改为 Obsidian 主题变量
+- **构建与发布同步** — 生产构建改为压缩输出，Release 资产说明补充 `styles.css`
 
-## 改进
+## 披露与仓库整理
 
-- 命令面板统一 `Zotero Citations:` 前缀，不再与其他插件命令混淆
-- 文档首选项窗口完全重写，样式列表可搜索、可刷新
-- Modal 对话框标题对齐优化
-- Word 导出模板样式调整（参考书目段落取消缩进）
+- **README 披露补全** — 补充回环网络、临时文件、本地 `pandoc` / `sqlite3` / `osascript` 调用说明
+- **仓库结构更标准** — `main.js` 继续作为本地运行产物存在，但不再纳入 Git 跟踪
+- **开发文档同步** — `docs/DEVELOPMENT.md` 与当前目录结构、Release 流程保持一致
 
-## 修复
+## 代码修复
 
-- `toolbarButtons` 设置首次加载兼容性修复
+- 改用 Obsidian `Platform` / `FileSystemAdapter` API，减少与官方规范不符的实现
+- 清理剩余静态内联样式，设置页与各模态窗口样式统一交给 `styles.css`
 
 ---
 

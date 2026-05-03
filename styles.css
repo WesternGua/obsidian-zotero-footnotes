@@ -1,0 +1,316 @@
+/* Word-style footnote marker */
+.zotero-fn-widget {
+  display: inline;
+  vertical-align: baseline;
+}
+
+sup.zotero-fn-num,
+.zotero-rendered-footnote-sup {
+  line-height: 0;
+}
+
+sup.zotero-fn-num > .zotero-footnote-marker {
+  color: var(--text-accent) !important;
+  display: inline;
+  font-size: 0.75em;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-text);
+  pointer-events: auto;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+sup.zotero-fn-num > .zotero-footnote-marker:hover,
+sup.zotero-fn-num > .zotero-footnote-marker:focus-visible {
+  color: var(--text-accent-hover, var(--text-accent)) !important;
+  text-decoration: none !important;
+  outline: none;
+}
+
+.zotero-fn-widget.zotero-fn-highlighted {
+  background: var(--text-highlight-bg) !important;
+  color: var(--text-normal) !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.zotero-fn-widget.zotero-fn-highlighted > sup.zotero-fn-num,
+.zotero-fn-widget.zotero-fn-highlighted > sup.zotero-fn-num > .zotero-footnote-marker,
+mark .zotero-rendered-footnote-sup,
+mark .zotero-rendered-footnote-ref {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+a.zotero-rendered-footnote-ref {
+  color: var(--text-accent);
+  font-size: 0.75em;
+  text-decoration: none;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.zotero-footnote-popover {
+  position: fixed;
+  z-index: 9999;
+  max-width: min(36rem, calc(100vw - 16px));
+  max-height: min(70vh, 42rem);
+  overflow: auto;
+}
+
+.zotero-footnote-popover .markdown-embed {
+  border: none;
+  padding: 0;
+}
+
+.zotero-footnote-popover .markdown-embed-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.zotero-footnote-popover .markdown-preview-view {
+  min-height: 0;
+  padding: 0 12px 2px;
+  font-size: 0.95em;
+}
+
+.zotero-footnote-popover .markdown-preview-view > *:first-child,
+.zotero-modal-title {
+  margin-top: 0;
+}
+
+.zotero-footnote-popover .markdown-preview-view > *:last-child {
+  margin-bottom: 0;
+}
+
+.zotero-footnote-locator-editor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 10px;
+}
+
+.zotero-footnote-locator-editor input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 2px 8px;
+  font-size: 0.9em;
+  border-radius: 6px;
+}
+
+.zotero-footnote-locator-editor > div,
+.zotero-btn-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.zotero-footnote-locator-editor button {
+  height: 26px;
+  padding: 2px 8px;
+  font-size: 0.85em;
+  border-radius: 6px;
+}
+
+/* Settings */
+.zotero-status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.zotero-status-ok {
+  background: var(--color-green);
+}
+
+.zotero-status-err {
+  background: var(--color-red);
+}
+
+.zotero-status-unknown {
+  background: var(--text-muted);
+}
+
+.zotero-status-row {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.zotero-settings-check-button {
+  margin-top: 4px;
+}
+
+.zotero-toolbar-buttons-section {
+  padding-left: 24px;
+  border-left: 2px solid var(--background-modifier-border);
+  margin-left: 12px;
+  margin-bottom: 12px;
+}
+
+.zotero-settings-command {
+  color: var(--text-muted);
+}
+
+/* Title bar icons */
+.view-action.zotero-titlebar-action.is-active {
+  color: var(--text-accent);
+}
+
+.view-action.zotero-titlebar-action.is-active svg {
+  stroke: currentColor;
+}
+
+/* Modals */
+.modal:has(.zotero-prefs-modal),
+.modal:has(.zotero-unlink-modal),
+.modal:has(.zotero-search-modal) {
+  padding-top: 12px;
+}
+
+.zotero-prefs-modal,
+.zotero-unlink-modal,
+.zotero-search-modal {
+  padding-top: 0 !important;
+}
+
+.zotero-prefs-section {
+  margin-bottom: 16px;
+}
+
+.zotero-prefs-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.zotero-prefs-refresh {
+  font-size: 0.85em;
+}
+
+.zotero-style-search-input,
+.zotero-mode-select,
+.zotero-search-input,
+.zotero-export-input {
+  width: 100%;
+}
+
+.zotero-style-search-input {
+  margin-bottom: 6px;
+  padding: 4px 8px;
+}
+
+.zotero-style-list,
+.zotero-results {
+  overflow-y: auto;
+}
+
+.zotero-style-list {
+  max-height: 200px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.zotero-mode-label {
+  display: block;
+}
+
+.zotero-mode-select {
+  margin-top: 6px;
+}
+
+.zotero-prefs-info,
+.zotero-preview {
+  background: var(--background-secondary);
+  border-radius: 4px;
+}
+
+.zotero-prefs-info {
+  padding: 10px;
+  margin-bottom: 16px;
+}
+
+.zotero-citation-count {
+  font-weight: 600;
+}
+
+.zotero-btn-row {
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.zotero-style-item,
+.zotero-result-row {
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.zotero-style-item {
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.zotero-style-item:hover,
+.zotero-result-row:hover {
+  background: var(--background-modifier-hover);
+}
+
+.zotero-style-item.is-selected,
+.zotero-result-row.is-selected {
+  background: var(--background-modifier-active-hover);
+}
+
+.zotero-style-item.is-selected {
+  font-weight: 600;
+}
+
+.zotero-results {
+  max-height: 300px;
+  margin: 8px 0;
+}
+
+.zotero-page-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.zotero-page-input {
+  flex: 1;
+}
+
+.zotero-result-row {
+  padding: 6px 8px;
+}
+
+.zotero-result-title {
+  font-weight: 500;
+}
+
+.zotero-result-meta,
+.zotero-results-placeholder,
+.zotero-style-hint {
+  color: var(--text-muted);
+}
+
+.zotero-preview {
+  padding: 6px 10px;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.zotero-export-input {
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}

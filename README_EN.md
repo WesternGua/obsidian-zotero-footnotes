@@ -32,6 +32,7 @@
 1. Download the following files from the GitHub Releases page:
    - `main.js` — plugin runtime
    - `manifest.json` — plugin manifest
+   - `styles.css` — plugin styles
 2. Place the files into your vault's `.obsidian/plugins/zotero-citations/` directory (create it if it does not exist)
 3. Enable **Zotero Citations** in Obsidian Settings → Community plugins
 4. Make sure Zotero is running and Better BibTeX is installed
@@ -45,11 +46,21 @@ This version has been developed and tested primarily on **macOS**. Linux and Win
 
 ---
 
+## Disclosures
+
+- **Network use**: the plugin talks to Zotero / Better BibTeX over the local loopback address `127.0.0.1`; it does not rely on a plugin-operated remote server.
+- **External files and executables**: the plugin reads the local Zotero styles directory; in fallback scenarios it may copy and read the local Zotero database in the system temp directory; for Word export it invokes the local `pandoc` executable; for database fallback parsing it may invoke the local `sqlite3` executable; on macOS it may invoke the system `osascript` command to return focus to Obsidian after the Zotero picker closes.
+- **Local data storage**: the plugin stores settings and citation cache data in Obsidian's plugin data storage.
+- **Accounts / payments / ads / telemetry**: the plugin does not require an account, does not include ads, does not include in-app payments, and does not intentionally collect telemetry.
+- **Source availability**: the plugin source code is published on GitHub under the MIT license: <https://github.com/WesternGua/obsidian-zotero-citations>
+
+---
+
 ## Quick Start
 
 ### 1. Insert a Citation
 
-Run `Zotero Citations: Insert citation` from the command palette, or click the citation icon in the title bar.
+Search for `Insert citation` in the command palette, or click the citation icon in the title bar.
 
 The plugin will first try to open Zotero's native citation picker — search for items, add a page number or other locator, and confirm with the checkmark button.
 
@@ -57,7 +68,7 @@ Inserted citations appear as footnotes or endnotes depending on your current cit
 
 > **Note**:
 > - The plugin writes hidden metadata (`<!-- zotero:ITEMKEY:locator -->`) at the beginning of each note. Do not remove it manually, or the plugin will not be able to track the citation.
-> - When you are ready to finalize, run `Zotero Citations: Unlink citations` (irreversible) to strip the hidden metadata while keeping the visible citation text.
+> - When you are ready to finalize, run `Unlink citations` (irreversible) to strip the hidden metadata while keeping the visible citation text.
 
 ![insert-citation-preview](assets/screenshots/insert-citation-preview.png)
 
@@ -69,20 +80,20 @@ With Word-style footnote display enabled, hover over a superscript number to pre
 
 ### 3. Switch Citation Style
 
-Run `Zotero Citations: Document preferences` to open the preferences panel. The plugin dynamically reads all CSL styles installed in your Zotero and presents them in a searchable list. Pick a style, optionally switch between footnote/endnote mode, and apply the change to all citations in the current document at once:
+Run `Document preferences` to open the preferences panel. The plugin dynamically reads all CSL styles installed in your Zotero and presents them in a searchable list. Pick a style, optionally switch between footnote/endnote mode, and apply the change to all citations in the current document at once:
 
 ![en-preferences](assets/screenshots/en-preferences.png)
 
 ### 4. Insert a Bibliography
 
-Run `Zotero Citations: Insert bibliography` to generate a formatted reference list at the cursor position. The bibliography is also preserved when exporting to Word.
+Run `Insert bibliography` to generate a formatted reference list at the cursor position. The bibliography is also preserved when exporting to Word.
 
 ![en-insert-bibliography](assets/screenshots/en-insert-bibliography.png)
 
 ### 5. Export to Word
 
-1. Run `Zotero Citations: Check whether Pandoc is available` first to confirm Pandoc is working.
-2. Run `Zotero Citations: Export to Word (.docx)`.
+1. Run `Check whether Pandoc is available` first to confirm Pandoc is working.
+2. Run `Export to Word (.docx)`.
 
 The exported Word document contains properly formatted footnotes, with body text in SimSun 12pt, 1.5 line spacing, justified alignment, first-line indent, and headings in SimHei.
 
@@ -114,7 +125,7 @@ The exported Word document contains properly formatted footnotes, with body text
 
 ## Command List
 
-All commands are prefixed with `Zotero Citations:` for easy discovery in the command palette:
+The plugin provides the following commands; you can search for them directly by name in the command palette:
 
 | Command | Description |
 |---------|-------------|

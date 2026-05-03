@@ -44,7 +44,7 @@ export class SearchModal extends Modal {
     const { contentEl } = this;
     contentEl.empty();
     contentEl.addClass("zotero-search-modal");
-    contentEl.createEl("h2", { text: appT(this.app, "search.title") });
+    contentEl.createEl("h2", { text: appT(this.app, "search.title"), cls: "zotero-modal-title" });
 
     const styleName = getStyleName(this.opts.style, getAppSettings(this.app) || DEFAULT_SETTINGS);
     contentEl.createEl("p", {
@@ -58,37 +58,24 @@ export class SearchModal extends Modal {
       placeholder: appT(this.app, "search.placeholder"),
       cls: "zotero-search-input",
     });
-    this.searchInput.style.width = "100%";
     this.searchInput.addEventListener("input", () => this.onSearchInput());
 
     this.resultsEl = contentEl.createDiv({ cls: "zotero-results" });
-    this.resultsEl.style.maxHeight = "300px";
-    this.resultsEl.style.overflowY = "auto";
-    this.resultsEl.style.margin = "8px 0";
     this.resultsEl.createEl("p", {
       text: appT(this.app, "search.enterQuery"),
       cls: "zotero-results-placeholder",
     });
 
     const pageWrap = contentEl.createDiv({ cls: "zotero-page-wrap" });
-    pageWrap.style.display = "flex";
-    pageWrap.style.alignItems = "center";
-    pageWrap.style.gap = "8px";
-    pageWrap.style.marginTop = "8px";
     pageWrap.createEl("label", { text: appT(this.app, "search.pageLabel") });
     this.pageInput = pageWrap.createEl("input", {
       type: "text",
       placeholder: appT(this.app, "search.pagePlaceholder"),
       cls: "zotero-page-input",
     });
-    this.pageInput.style.flex = "1";
     if (this.opts.existingPage) this.pageInput.value = this.opts.existingPage;
 
     const btnRow = contentEl.createDiv({ cls: "zotero-btn-row" });
-    btnRow.style.display = "flex";
-    btnRow.style.justifyContent = "flex-end";
-    btnRow.style.gap = "8px";
-    btnRow.style.marginTop = "12px";
 
     const cancelBtn = btnRow.createEl("button", { text: appT(this.app, "common.cancel") });
     cancelBtn.addEventListener("click", () => this.close());
@@ -141,9 +128,6 @@ export class SearchModal extends Modal {
 
   private renderResultItem(item: ZoteroItem): void {
     const row = this.resultsEl.createDiv({ cls: "zotero-result-row" });
-    row.style.padding = "6px 8px";
-    row.style.cursor = "pointer";
-    row.style.borderRadius = "4px";
 
     const authors = item.creators
       .filter((c) => c.creatorType === "author")
@@ -155,29 +139,19 @@ export class SearchModal extends Modal {
     const typeLabel = SearchModal.typeLabel(item.itemType, getAppSettings(this.app) || DEFAULT_SETTINGS);
 
     const titleDiv = row.createEl("div", { text: item.title, cls: "zotero-result-title" });
-    titleDiv.style.fontWeight = "500";
     const metaDiv = row.createEl("div", {
       text: `${authors}${authors ? " · " : ""}${year} · ${typeLabel}`,
       cls: "zotero-result-meta",
     });
-    metaDiv.style.color = "var(--text-muted)";
 
     row.addEventListener("click", () => this.selectItem(item, row));
-    row.addEventListener("mouseover", () => {
-      row.style.background = "var(--background-modifier-hover)";
-    });
-    row.addEventListener("mouseout", () => {
-      if (this.selectedItem?.key !== item.key) {
-        row.style.background = "";
-      }
-    });
   }
 
   private selectItem(item: ZoteroItem, rowEl: HTMLElement): void {
     this.resultsEl.querySelectorAll(".zotero-result-row").forEach((el: Element) => {
-      (el as HTMLElement).style.background = "";
+      (el as HTMLElement).removeClass("is-selected");
     });
-    rowEl.style.background = "var(--background-modifier-active-hover)";
+    rowEl.addClass("is-selected");
     this.selectedItem = item;
     this.confirmBtn.disabled = false;
 
@@ -190,11 +164,6 @@ export class SearchModal extends Modal {
     let previewEl = this.contentEl.querySelector(".zotero-preview") as HTMLElement | null;
     if (!previewEl) {
       previewEl = this.contentEl.createDiv({ cls: "zotero-preview" });
-      previewEl.style.background = "var(--background-secondary)";
-      previewEl.style.padding = "6px 10px";
-      previewEl.style.borderRadius = "4px";
-      previewEl.style.marginTop = "8px";
-      previewEl.style.fontStyle = "italic";
     }
     previewEl.setText(appT(this.app, "search.preview", { preview }));
 

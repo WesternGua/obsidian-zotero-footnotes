@@ -6,7 +6,6 @@ This plugin directory now follows a more standard Obsidian plugin source-repo la
 
 ```text
 zotero-citations/
-├── .github/workflows/        # GitHub Actions
 ├── assets/screenshots/       # README images
 ├── docs/                     # Project docs
 ├── src/                      # TypeScript source
@@ -14,14 +13,16 @@ zotero-citations/
 ├── LICENSE
 ├── README.md
 ├── README_EN.md
+├── RELEASE_NOTES.md
 ├── esbuild.config.mjs
 ├── manifest.json
 ├── package.json
 ├── package-lock.json
+├── styles.css                # Runtime stylesheet loaded by Obsidian
 ├── tsconfig.json
 ├── version-bump.mjs
 ├── versions.json
-└── main.js                   # Build output used by Obsidian at runtime
+└── main.js                   # Generated build output used locally by Obsidian (kept untracked in Git)
 ```
 
 ## Local Workflow
@@ -45,9 +46,9 @@ This folder is both:
 1. a source repository layout, and
 2. the live plugin directory under `.obsidian/plugins/`
 
-So `main.js` must continue to exist locally for Obsidian to load the plugin, even though `.gitignore` excludes it for a cleaner source-repo workflow.
+So `main.js` must continue to exist locally for Obsidian to load the plugin, even though `.gitignore` excludes it from the GitHub source repository.
 
-Likewise, `data.json` is local runtime state and should stay untracked.
+Likewise, `data.json` is local runtime state and should stay untracked. In contrast, `styles.css` is a real plugin asset and should stay versioned.
 
 ## Release Metadata
 
@@ -62,4 +63,4 @@ Likewise, `data.json` is local runtime state and should stay untracked.
 3. Update `CHANGELOG.md`
 4. Bump the version with `npm version ...`
 5. Confirm `manifest.json` and `versions.json` were updated
-6. Attach `main.js` and `manifest.json` to the GitHub release if distributing release artifacts
+6. Attach `main.js`, `manifest.json`, and `styles.css` to the GitHub release if distributing release artifacts

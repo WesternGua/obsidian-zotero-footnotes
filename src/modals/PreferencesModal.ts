@@ -40,55 +40,39 @@ export class PreferencesModal extends Modal {
     const { contentEl } = this;
     contentEl.empty();
     contentEl.addClass("zotero-prefs-modal");
-    contentEl.createEl("h2", { text: appT(this.app, "prefs.title") });
+    contentEl.createEl("h2", { text: appT(this.app, "prefs.title"), cls: "zotero-modal-title" });
 
     // ── Style selector with search (Improvement 2) ──
-    const styleWrap = contentEl.createDiv();
-    styleWrap.style.marginBottom = "16px";
+    const styleWrap = contentEl.createDiv({ cls: "zotero-prefs-section" });
 
-    const labelRow = styleWrap.createDiv();
-    labelRow.style.display = "flex";
-    labelRow.style.justifyContent = "space-between";
-    labelRow.style.alignItems = "center";
-    labelRow.style.marginBottom = "6px";
+    const labelRow = styleWrap.createDiv({ cls: "zotero-prefs-label-row" });
 
     labelRow.createEl("label", { text: appT(this.app, "prefs.styleLabel") });
 
     const refreshBtn = labelRow.createEl("button", {
       text: appT(this.app, "prefs.refreshStyles"),
-      cls: "clickable-icon",
+      cls: "clickable-icon zotero-prefs-refresh",
     });
-    refreshBtn.style.fontSize = "0.85em";
     refreshBtn.addEventListener("click", () => this.loadStyles(true));
 
     // Search input for styles
     this.styleSearchInput = styleWrap.createEl("input", {
       type: "text",
       placeholder: appT(this.app, "prefs.searchStylePlaceholder"),
+      cls: "zotero-style-search-input",
     });
-    this.styleSearchInput.style.width = "100%";
-    this.styleSearchInput.style.marginBottom = "6px";
-    this.styleSearchInput.style.padding = "4px 8px";
     this.styleSearchInput.addEventListener("input", () => this.filterStyles());
 
     // Style list container
     this.styleListEl = styleWrap.createDiv({ cls: "zotero-style-list" });
-    this.styleListEl.style.maxHeight = "200px";
-    this.styleListEl.style.overflowY = "auto";
-    this.styleListEl.style.border = "1px solid var(--background-modifier-border)";
-    this.styleListEl.style.borderRadius = "4px";
-    this.styleListEl.style.padding = "4px";
 
     // Load styles (dynamic from Zotero + fallback)
     await this.loadStyles(false);
 
     // ── Mode selector ──
-    const modeWrap = contentEl.createDiv();
-    modeWrap.style.marginBottom = "16px";
-    modeWrap.createEl("label", { text: appT(this.app, "prefs.modeLabel") }).style.display = "block";
-    const modeSelect = modeWrap.createEl("select");
-    modeSelect.style.width = "100%";
-    modeSelect.style.marginTop = "6px";
+    const modeWrap = contentEl.createDiv({ cls: "zotero-prefs-section" });
+    modeWrap.createEl("label", { text: appT(this.app, "prefs.modeLabel"), cls: "zotero-mode-label" });
+    const modeSelect = modeWrap.createEl("select", { cls: "zotero-mode-select" });
     modeSelect.createEl("option", { text: getModeLabel("endnote", getAppSettings(this.app) || DEFAULT_SETTINGS, "option"), value: "endnote" });
     modeSelect.createEl("option", { text: getModeLabel("inline", getAppSettings(this.app) || DEFAULT_SETTINGS, "option"), value: "inline" });
     modeSelect.value = this.selectedMode;
@@ -99,20 +83,12 @@ export class PreferencesModal extends Modal {
 
     // ── Citation count info ──
     const infoWrap = contentEl.createDiv({ cls: "zotero-prefs-info" });
-    infoWrap.style.background = "var(--background-secondary)";
-    infoWrap.style.padding = "10px";
-    infoWrap.style.borderRadius = "4px";
-    infoWrap.style.marginBottom = "16px";
     infoWrap.createEl("span", { text: appT(this.app, "prefs.citationCount") });
     this.citationsFoundEl = infoWrap.createEl("span", { text: "–", cls: "zotero-citation-count" });
-    this.citationsFoundEl.style.fontWeight = "600";
     this.updateCitationCount();
 
     // ── Buttons ──
     const btnRow = contentEl.createDiv({ cls: "zotero-btn-row" });
-    btnRow.style.display = "flex";
-    btnRow.style.gap = "8px";
-    btnRow.style.justifyContent = "flex-end";
     const cancelBtn = btnRow.createEl("button", { text: appT(this.app, "common.cancel") });
     cancelBtn.addEventListener("click", () => this.close());
     const applyBtn = btnRow.createEl("button", { text: appT(this.app, "prefs.apply"), cls: "mod-cta" });
@@ -168,15 +144,8 @@ export class PreferencesModal extends Modal {
     this.styleListEl.empty();
     for (const style of styles) {
       const item = this.styleListEl.createDiv({ cls: "zotero-style-item" });
-      item.style.padding = "4px 8px";
-      item.style.cursor = "pointer";
-      item.style.borderRadius = "3px";
       item.textContent = style.title;
-
-      if (style.id === this.selectedStyle) {
-        item.style.background = "var(--background-modifier-active-hover)";
-        item.style.fontWeight = "600";
-      }
+      item.toggleClass("is-selected", style.id === this.selectedStyle);
 
       item.addEventListener("click", () => {
         this.selectedStyle = style.id;
@@ -186,12 +155,6 @@ export class PreferencesModal extends Modal {
             : this.allStyles
         );
         this.updateCitationCount();
-      });
-      item.addEventListener("mouseover", () => {
-        if (style.id !== this.selectedStyle) item.style.background = "var(--background-modifier-hover)";
-      });
-      item.addEventListener("mouseout", () => {
-        if (style.id !== this.selectedStyle) item.style.background = "";
       });
     }
   }

@@ -1,7 +1,7 @@
 /**
  * ExportManager.ts – Pandoc export and reference document generation
  */
-import { Notice } from "obsidian";
+import { Notice, Platform } from "obsidian";
 import { t } from "./i18n";
 import { ZoteroCitationsSettings, DEFAULT_SETTINGS } from "./settings";
 
@@ -93,7 +93,7 @@ export class ExportManager {
 
   static q(s: string): string {
     if (!s) return "";
-    return process.platform === "win32"
+    return Platform.isWin
       ? `"${s.replace(/"/g, '\\"')}"`
       : `'${s.replace(/'/g, "'\\''")}'`;
   }

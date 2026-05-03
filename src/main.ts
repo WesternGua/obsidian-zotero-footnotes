@@ -27,6 +27,13 @@ type SelectionSnapshot = {
   to: any;
 };
 
+type AppWithCommands = obsidian.App & {
+  commands?: {
+    commands?: Record<string, { name: string }>;
+    executeCommandById?: (commandId: string) => void;
+  };
+};
+
 const ZOTERO_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <rect x="10" y="10" width="80" height="80" rx="10" fill="currentColor" opacity="0.12"/>
   <text x="50" y="70" font-size="58" text-anchor="middle" font-family="serif" fill="currentColor" font-weight="bold">Z</text>
@@ -86,7 +93,6 @@ export default class ZoteroCitations extends obsidian.Plugin {
   editorExtension: any = null;
   ribbonIconEl: HTMLElement | null = null;
   titlebarActions: WeakMap<any, HTMLElement[]> = new WeakMap();
-  styleEl: HTMLStyleElement | null = null;
   focusBurstTimer: number | null = null;
   focusBurstStopTimer: number | null = null;
   focusBurstTopmostResetTimer: number | null = null;
@@ -161,13 +167,11 @@ export default class ZoteroCitations extends obsidian.Plugin {
     });
 
     this.addSettingTab(new ZoteroSettingTab(this.app, this));
-    this.injectStyles();
     this.applyLanguage();
 
     this.registerEvent(this.app.workspace.on("active-leaf-change", () => this.refreshToolbars()));
     this.registerEvent(this.app.workspace.on("layout-change", () => this.refreshToolbars()));
-
-    window.setTimeout(() => this.refreshToolbars(), 100);
+    this.app.workspace.onLayoutReady(() => this.refreshToolbars());
   }
 
   onunload() {
@@ -184,9 +188,6 @@ export default class ZoteroCitations extends obsidian.Plugin {
         this.clearToolbar(leaf.view);
       }
     });
-
-    this.styleEl?.remove();
-    this.styleEl = null;
   }
 
   // ══ Settings ══════════════════════════════════════════════════════════════
@@ -213,23 +214,22 @@ export default class ZoteroCitations extends obsidian.Plugin {
   }
 
   getCommandLabels() {
-    const prefix = "Zotero Citations: ";
     return {
-      "insert-edit-citation": prefix + this.t("command.insertCitation"),
-      "toggle-word-display": prefix + this.t("command.toggleWordDisplay"),
-      "toggle-toolbar": prefix + this.t("command.toggleToolbar"),
-      "insert-bibliography": prefix + this.t("command.insertBibliography"),
-      "refresh-citations": prefix + this.t("command.refreshCitations"),
-      "export-to-word": prefix + this.t("command.exportToWord"),
-      "unlink-citations": prefix + this.t("command.unlinkCitations"),
-      "document-preferences": prefix + this.t("command.documentPreferences"),
-      "check-pandoc": prefix + this.t("command.checkPandoc"),
+      "insert-edit-citation": this.t("command.insertCitation"),
+      "toggle-word-display": this.t("command.toggleWordDisplay"),
+      "toggle-toolbar": this.t("command.toggleToolbar"),
+      "insert-bibliography": this.t("command.insertBibliography"),
+      "refresh-citations": this.t("command.refreshCitations"),
+      "export-to-word": this.t("command.exportToWord"),
+      "unlink-citations": this.t("command.unlinkCitations"),
+      "document-preferences": this.t("command.documentPreferences"),
+      "check-pandoc": this.t("command.checkPandoc"),
     };
   }
 
   syncCommandLabels() {
     const labels = this.getCommandLabels();
-    const commands = (this.app as any).commands?.commands ?? {};
+    const commands = (this.app as AppWithCommands).commands?.commands ?? {};
 
     for (const [id, name] of Object.entries(labels)) {
       const fullId = `${this.manifest.id}:${id}`;
@@ -253,7 +253,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
 
   /** Force Markdown views to re-render so Word-style footnote settings update everywhere. */
   refreshEditorExtension() {
-    (this.app.workspace as any).updateOptions();
+    this.app.workspace.updateOptions();
     this.refreshMarkdownPreviews();
     this.refreshToolbars();
   }
@@ -261,7 +261,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
   refreshMarkdownPreviews() {
     this.app.workspace.iterateAllLeaves((leaf) => {
       if (leaf.view instanceof obsidian.MarkdownView) {
-        (leaf.view as any).previewMode?.rerender(true);
+        leaf.view.previewMode?.rerender(true);
       }
     });
   }
@@ -299,7 +299,9 @@ export default class ZoteroCitations extends obsidian.Plugin {
     const file = this.app.workspace.getActiveFile();
     if (!file) return null;
 
-    const base = (this.app.vault.adapter as any).getBasePath?.();
+    const base = this.app.vault.adapter instanceof obsidian.FileSystemAdapter
+      ? this.app.vault.adapter.getBasePath()
+      : null;
     return base ? `${base}/${file.path}` : file.path;
   }
 
@@ -380,7 +382,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
           }
         }
         try {
-          if (process.platform === "darwin") {
+          if (obsidian.Platform.isMacOS) {
             const { execFile } = require("child_process");
             execFile(
               "osascript",
@@ -418,7 +420,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
         // noop
       }
       try {
-        (this.app as any).commands.executeCommandById("editor:focus");
+        (this.app as AppWithCommands).commands?.executeCommandById?.("editor:focus");
       } catch (_e) {
         // noop
       }
@@ -809,7 +811,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
   refreshToolbars() {
     this.app.workspace.iterateAllLeaves((leaf) => {
       if (leaf.view instanceof obsidian.MarkdownView) {
-        this.syncToolbar(leaf.view as any);
+        this.syncToolbar(leaf.view);
       }
     });
   }
@@ -821,7 +823,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
     new obsidian.Notice(this.settings.showToolbar ? this.t("notice.toolbarShown") : this.t("notice.toolbarHidden"));
   }
 
-  syncToolbar(view: any) {
+  syncToolbar(view: obsidian.MarkdownView) {
     this.clearToolbar(view);
     if (!this.settings.showToolbar) return;
 
@@ -864,7 +866,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
     this.titlebarActions.set(view, actionEls);
   }
 
-  clearToolbar(view: any) {
+  clearToolbar(view: obsidian.MarkdownView) {
     view.contentEl.querySelectorAll(".zotero-toolbar").forEach((el: Element) => el.remove());
     const actionEls = this.titlebarActions.get(view);
     if (!actionEls) return;
@@ -927,160 +929,6 @@ export default class ZoteroCitations extends obsidian.Plugin {
     if (!locator) return locator;
     return locator.replace(/^(p\.|para\.|sec\.|ch\.|fig\.|table|v\.|l\.|n\.|col\.|no\.|vol\.)\s+/i, "");
   }
-
-  // ── CSS ───────────────────────────────────────────────────────────────────
-  injectStyles() {
-    this.styleEl?.remove();
-    const s = document.createElement("style");
-    s.id = "zotero-wi-styles";
-    s.textContent = `
-      /* Word-style footnote marker */
-      .zotero-fn-widget {
-        display: inline;
-        vertical-align: baseline;
-      }
-      sup.zotero-fn-num {
-        line-height: 0;
-      }
-      sup.zotero-fn-num > .zotero-footnote-marker {
-        color: var(--text-accent) !important;
-        display: inline;
-        font-size: 0.75em;
-        font-weight: 500;
-        cursor: pointer;
-        font-family: var(--font-text);
-        pointer-events: auto;
-        text-decoration: none !important;
-        box-shadow: none !important;
-        border: none !important;
-      }
-      sup.zotero-fn-num > .zotero-footnote-marker:hover,
-      sup.zotero-fn-num > .zotero-footnote-marker:focus-visible {
-        color: var(--text-accent-hover, var(--text-accent)) !important;
-        text-decoration: none !important;
-        outline: none;
-      }
-      .zotero-fn-widget.zotero-fn-highlighted {
-        background: var(--text-highlight-bg) !important;
-        color: var(--text-normal) !important;
-        box-shadow: none !important;
-        border: none !important;
-      }
-      .zotero-fn-widget.zotero-fn-highlighted > sup.zotero-fn-num,
-      .zotero-fn-widget.zotero-fn-highlighted > sup.zotero-fn-num > .zotero-footnote-marker,
-      mark .zotero-rendered-footnote-sup,
-      mark .zotero-rendered-footnote-ref {
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-      }
-      .zotero-rendered-footnote-sup {
-        line-height: 0;
-      }
-      a.zotero-rendered-footnote-ref {
-        color: var(--text-accent);
-        font-size: 0.75em;
-        text-decoration: none;
-        box-shadow: none !important;
-        border: none !important;
-      }
-      .zotero-footnote-hover {
-        position: fixed;
-        z-index: 9999;
-        max-width: min(32rem, calc(100vw - 16px));
-        padding: 8px 10px;
-        border-radius: 8px;
-        background: var(--background-primary);
-        border: 1px solid var(--background-modifier-border);
-        box-shadow: var(--shadow-s);
-        color: var(--text-normal);
-        font-size: 0.9em;
-        line-height: 1.45;
-        white-space: normal;
-        pointer-events: none;
-      }
-      .zotero-footnote-popover {
-        max-width: min(36rem, calc(100vw - 16px));
-        max-height: min(70vh, 42rem);
-        overflow: auto;
-      }
-      .zotero-footnote-popover .markdown-embed {
-        border: none;
-        padding: 0;
-      }
-      .zotero-footnote-popover .markdown-embed-content {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
-      .zotero-footnote-popover .markdown-preview-view {
-        min-height: 0;
-        padding: 0 12px 2px;
-        font-size: 0.95em;
-      }
-      .zotero-footnote-popover .markdown-preview-view > *:first-child {
-        margin-top: 0;
-      }
-      .zotero-footnote-popover .markdown-preview-view > *:last-child {
-        margin-bottom: 0;
-      }
-      .zotero-footnote-locator-editor {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 12px 10px;
-      }
-      .zotero-footnote-locator-editor input {
-        flex: 1 1 auto;
-        min-width: 0;
-        height: 26px;
-        padding: 2px 8px;
-        font-size: 0.9em;
-        border-radius: 6px;
-      }
-      .zotero-footnote-locator-editor > div {
-        display: flex;
-        justify-content: flex-end;
-      }
-      .zotero-footnote-locator-editor button {
-        height: 26px;
-        padding: 2px 8px;
-        font-size: 0.85em;
-        border-radius: 6px;
-      }
-      /* Connection status dots */
-      .zotero-status-dot {
-        display: inline-block; width: 10px; height: 10px;
-        border-radius: 50%; margin-right: 8px; vertical-align: middle;
-      }
-      .zotero-status-ok  { background: #4caf50; }
-      .zotero-status-err { background: #f44336; }
-      .zotero-status-unknown { background: #9e9e9e; }
-      .zotero-status-row { display: flex; align-items: center; margin: 6px 0; }
-      .view-action.zotero-titlebar-action.is-active {
-        color: var(--text-accent);
-      }
-      .view-action.zotero-titlebar-action.is-active svg {
-        stroke: currentColor;
-      }
-      /* Reduce excessive top spacing in plugin modals so title aligns with close button */
-      .modal:has(.zotero-prefs-modal),
-      .modal:has(.zotero-unlink-modal),
-      .modal:has(.zotero-search-modal) {
-        padding-top: 12px;
-      }
-      .zotero-prefs-modal, .zotero-unlink-modal, .zotero-search-modal {
-        padding-top: 0 !important;
-      }
-      .zotero-prefs-modal h2:first-child,
-      .zotero-unlink-modal h2:first-child,
-      .zotero-search-modal h2:first-child {
-        margin-top: 0;
-      }
-    `;
-    document.head.appendChild(s);
-    this.styleEl = s;
-  }
 }
 
 class ConfirmModal extends obsidian.Modal {
@@ -1099,10 +947,9 @@ class ConfirmModal extends obsidian.Modal {
 
   onOpen() {
     if (this.cls) this.contentEl.addClass(this.cls);
-    this.contentEl.createEl("h2", { text: this.title });
+    this.contentEl.createEl("h2", { text: this.title, cls: "zotero-modal-title" });
     this.contentEl.createEl("p", { text: this.msg });
     const row = this.contentEl.createDiv({ cls: "zotero-btn-row" });
-    row.style.cssText = "display:flex;justify-content:flex-end;gap:8px;margin-top:16px";
     row.createEl("button", { text: appT(this.app, "common.cancel") }).addEventListener("click", () => this.close());
     const ok = row.createEl("button", { text: appT(this.app, "common.confirm"), cls: "mod-warning" });
     ok.addEventListener("click", () => {

@@ -34,6 +34,7 @@
 1. 从 GitHub Releases 页面下载以下文件：
    - `main.js` — 插件主程序
    - `manifest.json` — 插件清单
+   - `styles.css` — 插件样式
 2. 将以上文件放入 vault 的 `.obsidian/plugins/zotero-citations/` 目录（如目录不存在则手动创建）
 3. 在 Obsidian 设置 → 第三方插件中启用 **Zotero Citations**
 4. 确保 Zotero 已打开且 Better BibTeX 已安装
@@ -47,11 +48,21 @@
 
 ---
 
+## 披露说明
+
+- **网络访问**：插件会通过 `127.0.0.1` 本地回环地址与 Zotero / Better BibTeX 通信，不会连接插件自建服务器。
+- **外部文件与可执行程序访问**：插件会读取本机 Zotero 样式目录；在部分回退场景下可能复制并读取本机 Zotero 数据库到系统临时目录；导出 Word 时会调用本地 `pandoc`；数据库回退解析时可能调用本地 `sqlite3`；在 macOS 上，为了从 Zotero 选择器返回 Obsidian，插件可能调用系统 `osascript`。
+- **本地数据存储**：插件会在 Obsidian 的插件数据中保存设置项和引用缓存。
+- **账户 / 付费 / 广告 / 遥测**：插件不要求登录账户，不含广告，不含内购，也不主动收集遥测数据。
+- **源码状态**：插件源码已公开在 GitHub 仓库中，并以 MIT 许可证发布：<https://github.com/WesternGua/obsidian-zotero-citations>
+
+---
+
 ## 快速上手
 
 ### 1. 插入引用
 
-在命令面板中执行 `Zotero Citations: 插入引用`，或点击标题栏中的插入引用图标。
+在命令面板中搜索“插入引用”，或点击标题栏中的插入引用图标。
 
 插件会优先调用 Zotero 原生引文选择器——在弹出窗口中搜索并选择条目，可填写页码等定位符，点击右上角 ✔ 确认插入。
 
@@ -59,7 +70,7 @@
 
 > **注意**：
 > - 插件会在脚注正文开头写入 `<!-- zotero:ITEMKEY:locator -->` 形式的隐藏元数据，请勿手动删除，否则插件无法识别该引用。
-> - 定稿后如需移除插件元数据，可执行 `Zotero Citations: 解除引用链接`（不可逆），插件会删除隐藏元数据并保留可见引用文本。
+> - 定稿后如需移除插件元数据，可执行“解除引用链接”（不可逆），插件会删除隐藏元数据并保留可见引用文本。
 
 ![insert-citation-preview](assets/screenshots/insert-citation-preview.png)
 
@@ -71,20 +82,20 @@
 
 ### 3. 切换引用样式
 
-执行 `Zotero Citations: 文档首选项` 打开文档首选项窗口。插件会动态读取 Zotero 中已安装的所有 CSL 样式，以可搜索列表形式展示；选择所需样式后，可同时切换脚注/尾注模式，并一键应用到当前文档的所有引用：
+执行“文档首选项”打开文档首选项窗口。插件会动态读取 Zotero 中已安装的所有 CSL 样式，以可搜索列表形式展示；选择所需样式后，可同时切换脚注/尾注模式，并一键应用到当前文档的所有引用：
 
 ![文档首选项](assets/screenshots/zh-preferences.png)
 
 ### 4. 插入参考书目
 
-执行 `Zotero Citations: 插入参考书目`，插件会在光标位置生成当前文档所有引用的参考文献列表。参考书目在导出 Word 时也会保留。
+执行“插入参考书目”，插件会在光标位置生成当前文档所有引用的参考文献列表。参考书目在导出 Word 时也会保留。
 
 ![insert-bibliography-preview](assets/screenshots/insert-bibliography-preview.png)
 
 ### 5. 导出为 Word
 
-1. 在命令面板中执行 `Zotero Citations: 检测 Pandoc 是否可用`，确认 Pandoc 正常工作
-2. 执行 `Zotero Citations: 导出为 Word (.docx)`
+1. 在命令面板中执行“检测 Pandoc 是否可用”，确认 Pandoc 正常工作
+2. 执行“导出为 Word (.docx)”
 
 导出的 Word 文档包含正确格式的脚注，正文为宋体小四、1.5 倍行距、两端对齐、首行缩进两字符，标题为黑体。
 
@@ -118,7 +129,7 @@
 
 ## 命令列表
 
-所有命令均以 `Zotero Citations:` 为前缀，方便在命令面板中搜索：
+以下为插件提供的命令；在命令面板中可直接按命令名称搜索：
 
 | 命令 | 说明 |
 |------|------|

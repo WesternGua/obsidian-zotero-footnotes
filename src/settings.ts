@@ -101,10 +101,9 @@ export class ZoteroSettingTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Zotero Citations" });
 
     // ── Interface language ──
-    containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.interface") });
+    new Setting(containerEl).setName(t(this.plugin.settings, "settings.interface")).setHeading();
     new Setting(containerEl)
       .setName(t(this.plugin.settings, "settings.interface"))
       .setDesc(t(this.plugin.settings, "settings.interfaceDesc"))
@@ -121,17 +120,19 @@ export class ZoteroSettingTab extends PluginSettingTab {
       });
 
     // ── Connection status ──
-    containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.connection") });
+    new Setting(containerEl).setName(t(this.plugin.settings, "settings.connection")).setHeading();
     const row = containerEl.createDiv({ cls: "zotero-status-row" });
     this.statusDot = row.createSpan({ cls: "zotero-status-dot zotero-status-unknown" });
     this.statusText = row.createSpan({ text: t(this.plugin.settings, "settings.checking") });
-    const btn = containerEl.createEl("button", { text: t(this.plugin.settings, "settings.recheck") });
-    btn.style.marginTop = "4px";
+    const btn = containerEl.createEl("button", {
+      text: t(this.plugin.settings, "settings.recheck"),
+      cls: "zotero-settings-check-button",
+    });
     btn.addEventListener("click", () => this.checkConnection());
     this.checkConnection();
 
     // ── Citation style ──
-    containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.citationStyleSection") });
+    new Setting(containerEl).setName(t(this.plugin.settings, "settings.citationStyleSection")).setHeading();
     new Setting(containerEl)
       .setName(t(this.plugin.settings, "settings.defaultStyle"))
       .setDesc(t(this.plugin.settings, "settings.defaultStyleDesc"))
@@ -176,7 +177,7 @@ export class ZoteroSettingTab extends PluginSettingTab {
       });
 
     // ── Editor display ──
-    containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.editorDisplaySection") });
+    new Setting(containerEl).setName(t(this.plugin.settings, "settings.editorDisplaySection")).setHeading();
     new Setting(containerEl)
       .setName(t(this.plugin.settings, "settings.wordDisplay"))
       .setDesc(t(this.plugin.settings, "settings.wordDisplayDesc"))
@@ -206,10 +207,6 @@ export class ZoteroSettingTab extends PluginSettingTab {
     // ── Improvement 3: Individual toolbar button toggles ──
     if (this.plugin.settings.showToolbar) {
       const toolbarSection = containerEl.createDiv({ cls: "zotero-toolbar-buttons-section" });
-      toolbarSection.style.paddingLeft = "24px";
-      toolbarSection.style.borderLeft = "2px solid var(--background-modifier-border)";
-      toolbarSection.style.marginLeft = "12px";
-      toolbarSection.style.marginBottom = "12px";
 
       const buttonKeys: { key: keyof ToolbarButtons; labelKey: string }[] = [
         { key: "export", labelKey: "settings.toolbarBtn.export" },
@@ -235,7 +232,7 @@ export class ZoteroSettingTab extends PluginSettingTab {
     }
 
     // ── Export section ──
-    containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.exportSection") });
+    new Setting(containerEl).setName(t(this.plugin.settings, "settings.exportSection")).setHeading();
     new Setting(containerEl)
       .setName(t(this.plugin.settings, "settings.pandocPath"))
       .setDesc(t(this.plugin.settings, "settings.pandocPathDesc"))
@@ -278,12 +275,11 @@ export class ZoteroSettingTab extends PluginSettingTab {
     }
 
     // ── Command list ──
-    containerEl.createEl("h3", { text: t(this.plugin.settings, "settings.commandsSection") });
+    new Setting(containerEl).setName(t(this.plugin.settings, "settings.commandsSection")).setHeading();
     const cmds = Object.values(this.plugin.getCommandLabels()) as string[];
     const ul = containerEl.createEl("ul");
     for (const c of cmds) {
-      const li = ul.createEl("li", { text: c });
-      li.style.color = "var(--text-muted)";
+      ul.createEl("li", { text: c, cls: "zotero-settings-command" });
     }
   }
 
@@ -295,7 +291,7 @@ export class ZoteroSettingTab extends PluginSettingTab {
         url: `http://127.0.0.1:${this.plugin.settings.zoteroPort}/connector/ping`,
         method: "GET",
         throw: false,
-      } as any);
+      });
       if (r.status === 200) {
         this.statusDot.className = "zotero-status-dot zotero-status-ok";
         this.statusText.textContent = t(this.plugin.settings, "status.connected");

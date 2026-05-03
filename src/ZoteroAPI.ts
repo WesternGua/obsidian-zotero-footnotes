@@ -2,7 +2,7 @@
  * ZoteroAPI.ts – Communication with Zotero via Better BibTeX HTTP API
  * Improvement 2: Added getInstalledStyles() to dynamically read CSL styles from Zotero
  */
-import { requestUrl } from "obsidian";
+import { Platform, requestUrl } from "obsidian";
 import * as nodeHttp from "http";
 import * as fs from "fs";
 import * as os from "os";
@@ -102,7 +102,7 @@ export class ZoteroAPI {
 
   async ping(): Promise<boolean> {
     try {
-      const r = await requestUrl({ url: `${this.baseUrl}/connector/ping`, method: "GET", throw: false } as any);
+      const r = await requestUrl({ url: `${this.baseUrl}/connector/ping`, method: "GET", throw: false });
       return r.status === 200;
     } catch (e) {
       return false;
@@ -120,10 +120,10 @@ export class ZoteroAPI {
     const home = os.homedir();
     const candidates: string[] = [];
 
-    if (process.platform === "darwin") {
+    if (Platform.isMacOS) {
       candidates.push(path.join(home, "Zotero", "styles"));
       candidates.push(path.join(home, "Library", "Application Support", "Zotero", "Profiles"));
-    } else if (process.platform === "win32") {
+    } else if (Platform.isWin) {
       const appdata = process.env.APPDATA || path.join(home, "AppData", "Roaming");
       candidates.push(path.join(appdata, "Zotero", "Zotero", "Profiles"));
       candidates.push(path.join(home, "Zotero", "styles"));
@@ -260,7 +260,7 @@ export class ZoteroAPI {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jsonrpc: "2.0", method: "item.search", params: [query], id: 1 }),
         throw: false,
-      } as any);
+      });
       if (r.status !== 200) throw new Error(`HTTP ${r.status}`);
       const d = r.json;
       if (d.error) throw new Error(d.error.message);
@@ -280,7 +280,7 @@ export class ZoteroAPI {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jsonrpc: "2.0", method: "item.citationkey", params: [itemKeys], id: 2 }),
         throw: false,
-      } as any);
+      });
       if (r.status !== 200) return map;
       const d = r.json;
       if (d.error || !d.result || typeof d.result !== "object") return map;
@@ -308,7 +308,7 @@ export class ZoteroAPI {
           id: 3,
         }),
         throw: false,
-      } as any);
+      });
       if (r.status === 200) {
         const d = r.json;
         if (!d?.error && d?.result) {
@@ -346,7 +346,7 @@ export class ZoteroAPI {
             id: 4,
           }),
           throw: false,
-        } as any);
+        });
         const d = r.json;
         if (r.status === 200 && !d.error && d.result) {
           const items = JSON.parse(d.result);

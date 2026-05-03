@@ -6,6 +6,22 @@
 
 ---
 
+## [0.2.1] - 2026-05-03
+
+### 改进
+
+- 对齐 Obsidian 官方插件规范：命令名、README、发布说明与实际行为同步，不再依赖手工命令前缀
+- 将静态内联样式迁移到 `styles.css`，并把状态颜色改为 Obsidian 主题变量
+- 构建产物改为生产模式压缩，GitHub Release 说明同步要求附带 `styles.css`
+
+### 修复
+
+- 扩充 README 披露说明，补充本地回环通信、临时文件、`pandoc` / `sqlite3` / `osascript` 等外部访问说明
+- 改用 Obsidian `Platform` / `FileSystemAdapter` API，减少与官方规范不符的运行时用法
+- 仓库不再跟踪 `main.js`，源码仓库与本地运行目录职责更清晰
+
+---
+
 ## [0.2.0] - 2026-05-03
 
 ### 新增
