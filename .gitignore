@@ -1,5 +1,8 @@
 .DS_Store
 node_modules/
 data.json
-main.js.bak*
-*.bak
+main.js
+dist/
+coverage/
+*.log
+*.tgz

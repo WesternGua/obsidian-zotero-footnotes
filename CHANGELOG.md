@@ -1,15 +1,41 @@
 # Changelog
 
-## 0.1.0
+本文件记录 Zotero Citations 插件的所有重要变更。
 
-Initial public packaging for GitHub, including:
+格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-- Zotero citation insertion and editing
-- Footnote mode and endnote mode
-- Word-style footnote display in editor/preview
-- Refreshing managed citations from Zotero
-- Document-wide citation style conversion
-- Bibliography insertion and update
-- Citation unlinking
-- Pandoc-based Word export
-- Bilingual README and release screenshots
+---
+
+## [0.2.0] - 2026-05-03
+
+### 新增
+
+- **动态 CSL 样式读取**：文档首选项窗口自动扫描 Zotero 已安装的 CSL 样式文件，附带搜索框和刷新按钮
+- **标题栏按钮独立控制**：6 个标题栏快捷图标可在设置中单独开关
+- **参考书目格式化**：插入参考书目时自动添加一级标题和引用块包裹
+
+### 改进
+
+- 命令面板中所有命令统一添加 `Zotero Citations:` 前缀，便于搜索
+- Word 导出参考书目段落取消缩进、两端对齐
+- Modal 标题与关闭按钮对齐（减少顶部空白）
+
+### 修复
+
+- 修复 `toolbarButtons` 设置在首次加载时可能为 `undefined` 的问题
+
+---
+
+## [0.1.0] - 2026-04-28
+
+### 初始发布
+
+- Zotero 引用插入（原生选择器 + 插件内搜索面板）
+- 脚注/尾注双模式
+- Word 风格脚注上标显示与悬停预览
+- 定位符（页码/段落）编辑
+- CSL 样式切换
+- 参考书目生成
+- Pandoc Word 导出
+- 解除引用链接
+- 标题栏快捷操作图标
