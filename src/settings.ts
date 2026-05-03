@@ -102,8 +102,7 @@ export class ZoteroSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    // ── Interface language ──
-    new Setting(containerEl).setName(t(this.plugin.settings, "settings.interface")).setHeading();
+    // Top-level general setting (no heading per Obsidian plugin guidelines)
     new Setting(containerEl)
       .setName(t(this.plugin.settings, "settings.interface"))
       .setDesc(t(this.plugin.settings, "settings.interfaceDesc"))
