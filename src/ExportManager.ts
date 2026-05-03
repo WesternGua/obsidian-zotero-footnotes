@@ -55,7 +55,7 @@ export class ExportManager {
     }
   }
 
-  static async showNativeSaveDialog(_defaultPath: string, _settings: ZoteroCitationsSettings = DEFAULT_SETTINGS): Promise<string | null | undefined> {
+  static showNativeSaveDialog(_defaultPath: string, _settings: ZoteroCitationsSettings = DEFAULT_SETTINGS): string | null | undefined {
     return undefined;
   }
 

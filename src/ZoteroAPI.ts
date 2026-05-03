@@ -568,21 +568,21 @@ ORDER BY i.key, ic.orderIndex;`;
   }
 
   private parseCaywItem(raw: JsonObject): CaywResult | null {
-    const locator = raw.locator ? String(raw.locator) : undefined;
-    const locatorLabel = raw.label ? String(raw.label) : "page";
+    const locator = raw.locator ? toStr(raw.locator) : undefined;
+    const locatorLabel = raw.label ? toStr(raw.label) : "page";
     const itemSrc = isRecord(raw.itemData) ? raw.itemData : isRecord(raw.item) ? raw.item : raw;
-    const preferParentKey = itemSrc.itemType === "attachment" && itemSrc.parentItem ? String(itemSrc.parentItem) : "";
+    const preferParentKey = itemSrc.itemType === "attachment" && itemSrc.parentItem ? toStr(itemSrc.parentItem) : "";
     let key = "";
     if (preferParentKey) key = preferParentKey;
     for (const f of ["itemKey", "key", "citationKey", "citekey"]) {
       if (key) break;
       const v = itemSrc[f] ?? raw[f];
-      if (v && String(v).length >= 2) { key = String(v); break; }
+      if (v && toStr(v).length >= 2) { key = toStr(v); break; }
     }
     if (!key) {
       for (const f of ["id"]) {
         const v = itemSrc[f] ?? raw[f];
-        if (v && String(v).length >= 2) { key = String(v); break; }
+        if (v && toStr(v).length >= 2) { key = toStr(v); break; }
       }
     }
     const item = this.normalizeAny(itemSrc);
@@ -598,15 +598,15 @@ ORDER BY i.key, ic.orderIndex;`;
     const record = isRecord(r) ? r : {};
     let key = "";
     for (const f of ["itemKey", "key", "citationKey"]) {
-      if (record[f]) { key = String(record[f]); break; }
+      if (record[f]) { key = toStr(record[f]); break; }
     }
     if (!key && typeof record.id === "string") {
-      const m = String(record.id).match(/\/items\/([A-Z0-9]{8})(?:$|[/?#])/i);
+      const m = record.id.match(/\/items\/([A-Z0-9]{8})(?:$|[/?#])/i);
       if (m) key = m[1];
     }
     for (const f of ["citation-key", "citekey", "id"]) {
       if (key) break;
-      if (record[f]) { key = String(record[f]); break; }
+      if (record[f]) { key = toStr(record[f]); break; }
     }
 
     const cslTypeMap: Record<string, string> = {
@@ -621,18 +621,18 @@ ORDER BY i.key, ic.orderIndex;`;
       "report": "report",
       "legal_case": "legal_case",
     };
-    const rawType = String(record.itemType ?? record.type ?? "");
+    const rawType = toStr(record.itemType ?? record.type);
     const itemType = cslTypeMap[rawType] ?? rawType;
-    const title = String(record.title ?? record.caseName ?? "");
+    const title = toStr(record.title ?? record.caseName);
 
     const creators: ZoteroCreator[] = [];
     if (Array.isArray(record.creators) && record.creators.length > 0) {
       for (const c of record.creators.filter(isRecord)) {
         creators.push({
-          firstName: String(c.firstName ?? c.given ?? ""),
-          lastName: String(c.lastName ?? c.family ?? ""),
-          name: (c.name ?? c.literal) ? String(c.name ?? c.literal) : undefined,
-          creatorType: String(c.creatorType ?? "author"),
+          firstName: toStr(c.firstName ?? c.given),
+          lastName: toStr(c.lastName ?? c.family),
+          name: (c.name ?? c.literal) ? toStr(c.name ?? c.literal) : undefined,
+          creatorType: toStr(c.creatorType) || "author",
         });
       }
     } else {
@@ -641,9 +641,9 @@ ORDER BY i.key, ic.orderIndex;`;
         if (Array.isArray(rawCreators)) {
           for (const a of rawCreators.filter(isRecord)) {
             creators.push({
-              firstName: String(a.given ?? a.firstName ?? ""),
-              lastName: String(a.family ?? a.lastName ?? ""),
-              name: (a.literal ?? a.name) ? String(a.literal ?? a.name) : undefined,
+              firstName: toStr(a.given ?? a.firstName),
+              lastName: toStr(a.family ?? a.lastName),
+              name: (a.literal ?? a.name) ? toStr(a.literal ?? a.name) : undefined,
               creatorType: ctype,
             });
           }
@@ -653,8 +653,8 @@ ORDER BY i.key, ic.orderIndex;`;
 
     let date: string | undefined;
     if (record.date) {
-      const m = String(record.date).match(/\b(\d{4})\b/);
-      date = m ? m[1] : String(record.date);
+      const m = toStr(record.date).match(/\b(\d{4})\b/);
+      date = m ? m[1] : toStr(record.date);
     } else {
       const issued = isRecord(record.issued) ? record.issued : undefined;
       const dateParts = issued?.["date-parts"];
@@ -662,8 +662,8 @@ ORDER BY i.key, ic.orderIndex;`;
       if (y) date = String(y);
     }
 
-    const publicationTitle = String(record.publicationTitle ?? record["container-title"] ?? record.journalAbbreviation ?? "") || undefined;
-    const authority = String(record.authority ?? record.court ?? "") || undefined;
+    const publicationTitle = toStr(record.publicationTitle ?? record["container-title"] ?? record.journalAbbreviation) || undefined;
+    const authority = toStr(record.authority ?? record.court) || undefined;
 
     return {
       key,
@@ -672,27 +672,35 @@ ORDER BY i.key, ic.orderIndex;`;
       creators,
       date,
       publicationTitle,
-      bookTitle: String(record.bookTitle ?? record["collection-title"] ?? "") || undefined,
-      publisher: String(record.publisher ?? "") || undefined,
-      place: String(record.place ?? record["publisher-place"] ?? "") || undefined,
-      volume: String(record.volume ?? "") || undefined,
-      issue: String(record.issue ?? "") || undefined,
-      pages: String(record.pages ?? record.page ?? "") || undefined,
-      edition: String(record.edition ?? "") || undefined,
-      DOI: String(record.DOI ?? "") || undefined,
-      URL: String(record.url ?? record.URL ?? "") || undefined,
-      ISBN: String(record.ISBN ?? "") || undefined,
-      thesisType: String(record.thesisType ?? "") || undefined,
-      university: String(record.university ?? record.school ?? "") || undefined,
-      conferenceName: String(record.conferenceName ?? record["event-title"] ?? "") || undefined,
+      bookTitle: toStr(record.bookTitle ?? record["collection-title"]) || undefined,
+      publisher: toStr(record.publisher) || undefined,
+      place: toStr(record.place ?? record["publisher-place"]) || undefined,
+      volume: toStr(record.volume) || undefined,
+      issue: toStr(record.issue) || undefined,
+      pages: toStr(record.pages ?? record.page) || undefined,
+      edition: toStr(record.edition) || undefined,
+      DOI: toStr(record.DOI) || undefined,
+      URL: toStr(record.url ?? record.URL) || undefined,
+      ISBN: toStr(record.ISBN) || undefined,
+      thesisType: toStr(record.thesisType) || undefined,
+      university: toStr(record.university ?? record.school) || undefined,
+      conferenceName: toStr(record.conferenceName ?? record["event-title"]) || undefined,
       authority,
       court: authority,
-      docketNumber: record.docketNumber ?? record.number ? String(record.docketNumber ?? record.number) : undefined,
-      extra: record.extra ?? record.note ? String(record.extra ?? record.note) : undefined,
+      docketNumber: (record.docketNumber ?? record.number) ? toStr(record.docketNumber ?? record.number) : undefined,
+      extra: (record.extra ?? record.note) ? toStr(record.extra ?? record.note) : undefined,
     };
   }
 }
 
 function isRecord(value: unknown): value is JsonObject {
-  return typeof value === "object" && value !== null;
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Safely convert an unknown value to string, avoiding '[object Object]'. */
+function toStr(value: unknown): string {
+  if (value == null) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return "";
 }

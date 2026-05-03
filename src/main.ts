@@ -553,7 +553,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
     if (this.settings.useDefaultExportDir) {
       await this.doExport(inputPath, suggested);
     } else {
-      const chosen = await ExportManager.showNativeSaveDialog(suggested, this.settings);
+      const chosen = ExportManager.showNativeSaveDialog(suggested, this.settings);
       if (chosen === null) return;
       if (chosen) {
         await this.doExport(inputPath, chosen);
@@ -755,7 +755,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
         evt.preventDefault();
         evt.stopPropagation();
         cb();
-      }) as HTMLElement;
+      });
       el.classList.add("zotero-titlebar-action");
       if (active) el.classList.add("is-active");
       actionEls.push(el);
@@ -839,7 +839,7 @@ export default class ZoteroCitations extends obsidian.Plugin {
     if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
       return root.querySelector<HTMLElement>(`#${CSS.escape(id)}`);
     }
-    return root.querySelector<HTMLElement>(`[id="${id.replace(/"/g, '\"')}"]`);
+    return root.querySelector<HTMLElement>(`[id="${id.replace(/"/g, "\\\"")}"]`);
   }
 
   normalizeFootnoteText(text: string) {

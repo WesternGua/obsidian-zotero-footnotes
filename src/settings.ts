@@ -300,7 +300,7 @@ export class ZoteroSettingTab extends PluginSettingTab {
         .setName(t(this.plugin.settings, "settings.defaultExportDir"))
         .setDesc(t(this.plugin.settings, "settings.defaultExportDirDesc"))
         .addText((text) =>
-          text.setPlaceholder("/Users/you/documents").setValue(this.plugin.settings.exportOutputDir).onChange((v: string) => {
+          text.setPlaceholder("Export folder path").setValue(this.plugin.settings.exportOutputDir).onChange((v: string) => {
             void (async () => {
               this.plugin.settings.exportOutputDir = v.trim();
               await this.plugin.saveSettings();

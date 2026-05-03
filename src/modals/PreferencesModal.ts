@@ -110,7 +110,7 @@ export class PreferencesModal extends Modal {
     // Try reading dynamic styles from Zotero
     let dynamicStyles: InstalledStyle[] = [];
     try {
-      dynamicStyles = await this.opts.api.getInstalledStyles();
+      dynamicStyles = this.opts.api.getInstalledStyles();
     } catch {
       // ignore
     }
