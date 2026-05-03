@@ -1,21 +1,21 @@
 /**
  * ReferenceDocGenerator.ts – Generates a .docx reference template for Pandoc export
  */
-const JSZip = require("jszip");
-const path = require("path");
-const fs = require("fs");
-const os = require("os");
+import JSZip from "jszip";
+import * as path from "path";
+import * as fs from "fs";
+import * as os from "os";
 
 export class ReferenceDocGenerator {
   static async generate(): Promise<string> {
     const zip = new JSZip();
     zip.file("[Content_Types].xml", CONTENT_TYPES);
-    zip.folder("_rels").file(".rels", ROOT_RELS);
-    const word = zip.folder("word");
+    zip.folder("_rels")!.file(".rels", ROOT_RELS);
+    const word = zip.folder("word")!;
     word.file("document.xml", DOCUMENT_XML);
     word.file("styles.xml", STYLES_XML);
     word.file("settings.xml", SETTINGS_XML);
-    word.folder("_rels").file("document.xml.rels", DOCUMENT_RELS);
+    word.folder("_rels")!.file("document.xml.rels", DOCUMENT_RELS);
     const buf = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
     const out = path.join(os.tmpdir(), "zotero-reference-chinese-law.docx");
     fs.writeFileSync(out, buf);

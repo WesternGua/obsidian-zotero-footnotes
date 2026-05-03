@@ -2,7 +2,8 @@
  * FootnoteExtension.ts – CodeMirror extension for Word-style footnote rendering
  */
 import { App, Component, MarkdownRenderer, MarkdownView, Notice } from "obsidian";
-import { ViewPlugin, WidgetType, Decoration, EditorView, ViewUpdate } from "@codemirror/view";
+import { ViewPlugin, WidgetType, Decoration, DecorationSet, EditorView, ViewUpdate } from "@codemirror/view";
+import { Range } from "@codemirror/state";
 import { appT } from "../i18n";
 import { CitationManager } from "../CitationManager";
 import { ZoteroItem } from "../ZoteroAPI";
@@ -128,7 +129,7 @@ export function createFootnoteExtension(options: FootnoteExtensionOptions) {
   const attachPopover = createPopoverAttacher();
   return ViewPlugin.fromClass(
     class {
-      decorations: any;
+      decorations: DecorationSet;
       constructor(view: EditorView) {
         this.decorations = buildDeco(view, options, attachPopover);
       }
@@ -138,7 +139,7 @@ export function createFootnoteExtension(options: FootnoteExtensionOptions) {
         }
       }
     },
-    { decorations: (v: any) => v.decorations },
+    { decorations: (v) => v.decorations },
   );
 }
 
@@ -205,7 +206,7 @@ function buildDeco(view: EditorView, options: FootnoteExtensionOptions, attachPo
   }
 
   hits.sort((a, b) => a.start - b.start);
-  const ranges: any[] = [];
+  const ranges: Range<Decoration>[] = [];
   let lastEnd = -1;
 
   for (const { start, end, num, markdown, text, identifier, domId, edit } of hits) {
@@ -445,7 +446,7 @@ async function renderPopoverMarkdown(
     if (!isActiveTarget()) return;
     reposition();
     requestAnimationFrame(reposition);
-  } catch (e) {
+  } catch {
     if (!preview.textContent?.trim()) preview.setText(spec.fallbackText);
   }
 }

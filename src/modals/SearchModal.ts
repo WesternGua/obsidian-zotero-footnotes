@@ -1,8 +1,8 @@
 /**
  * SearchModal.ts – In-plugin citation search fallback
  */
-import { Modal, App, Notice } from "obsidian";
-import { appT, getAppSettings } from "../i18n";
+import { Modal, App } from "obsidian";
+import { Language, appT, getAppSettings } from "../i18n";
 import { ZoteroAPI, ZoteroItem, ZoteroConnectionError } from "../ZoteroAPI";
 import { CitationManager } from "../CitationManager";
 import { DEFAULT_SETTINGS, getStyleName, getItemTypeLabel } from "../settings";
@@ -17,7 +17,7 @@ export interface SearchModalOpts {
 export class SearchModal extends Modal {
   private opts: SearchModalOpts;
   private selectedItem: ZoteroItem | null = null;
-  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private debounceTimer: number | null = null;
   private searchInput!: HTMLInputElement;
   private resultsEl!: HTMLElement;
   private pageInput!: HTMLInputElement;
@@ -25,7 +25,7 @@ export class SearchModal extends Modal {
 
   private _pageChangeHandler = () => {
     if (!this.selectedItem) return;
-    const previewEl = this.contentEl.querySelector(".zotero-preview") as HTMLElement | null;
+    const previewEl = this.contentEl.querySelector<HTMLElement>(".zotero-preview");
     if (!previewEl) return;
     const preview = CitationManager.formatCitation(
       this.selectedItem,
@@ -89,7 +89,7 @@ export class SearchModal extends Modal {
       if (e.key === "Escape") this.close();
     });
 
-    setTimeout(() => this.searchInput.focus(), 50);
+    window.setTimeout(() => { this.searchInput.focus(); }, 50);
   }
 
   private onSearchInput(): void {
@@ -100,7 +100,7 @@ export class SearchModal extends Modal {
       this.resultsEl.createEl("p", { text: appT(this.app, "search.enterQuery"), cls: "zotero-results-placeholder" });
       return;
     }
-    this.debounceTimer = setTimeout(() => this.doSearch(q), 300);
+    this.debounceTimer = window.setTimeout(() => { void this.doSearch(q); }, 300);
   }
 
   private async doSearch(query: string): Promise<void> {
@@ -138,8 +138,8 @@ export class SearchModal extends Modal {
     const year = CitationManager.getYear(item);
     const typeLabel = SearchModal.typeLabel(item.itemType, getAppSettings(this.app) || DEFAULT_SETTINGS);
 
-    const titleDiv = row.createEl("div", { text: item.title, cls: "zotero-result-title" });
-    const metaDiv = row.createEl("div", {
+    row.createEl("div", { text: item.title, cls: "zotero-result-title" });
+    row.createEl("div", {
       text: `${authors}${authors ? " · " : ""}${year} · ${typeLabel}`,
       cls: "zotero-result-meta",
     });
@@ -161,7 +161,7 @@ export class SearchModal extends Modal {
       this.pageInput.value.trim() || undefined
     );
 
-    let previewEl = this.contentEl.querySelector(".zotero-preview") as HTMLElement | null;
+    let previewEl = this.contentEl.querySelector<HTMLElement>(".zotero-preview");
     if (!previewEl) {
       previewEl = this.contentEl.createDiv({ cls: "zotero-preview" });
     }
@@ -185,7 +185,7 @@ export class SearchModal extends Modal {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
   }
 
-  static typeLabel(itemType: string, settings: any = DEFAULT_SETTINGS): string {
+  static typeLabel(itemType: string, settings: { language?: string } | Language = DEFAULT_SETTINGS): string {
     const label = getItemTypeLabel(itemType, settings);
     return label === `itemType.${itemType}` ? itemType : label;
   }

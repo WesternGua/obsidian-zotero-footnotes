@@ -301,27 +301,44 @@ export const I18N: { zh: I18NDict; en: I18NDict } = {
   },
 };
 
-export type Language = "zh" | "en";
+import type { App } from "obsidian";
 
-export function getLanguage(settings: any): Language {
+export type Language = "zh" | "en";
+export type I18nValue = string | number | boolean | null | undefined;
+
+interface LanguageSettingsLike {
+  language?: string;
+}
+
+interface ZoteroPluginSettingsHolder {
+  settings?: LanguageSettingsLike;
+}
+
+type AppWithPluginSettings = App & {
+  plugins?: {
+    plugins?: Record<string, ZoteroPluginSettingsHolder | undefined>;
+  };
+};
+
+export function getLanguage(settings: LanguageSettingsLike | null | undefined): Language {
   return settings?.language === "en" ? "en" : "zh";
 }
 
-export function formatI18n(template: string, vars: Record<string, any> = {}): string {
-  return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] != null ? String(vars[key]) : "");
+export function formatI18n(template: string, vars: Record<string, I18nValue> = {}): string {
+  return template.replace(/\{(\w+)\}/g, (_, key: string) => vars[key] != null ? String(vars[key]) : "");
 }
 
-export function t(settingsOrLang: any, key: string, vars?: Record<string, any>): string {
-  const lang: Language = typeof settingsOrLang === "string" ? settingsOrLang as Language : getLanguage(settingsOrLang);
+export function t(settingsOrLang: LanguageSettingsLike | Language, key: string, vars?: Record<string, I18nValue>): string {
+  const lang: Language = typeof settingsOrLang === "string" ? settingsOrLang : getLanguage(settingsOrLang);
   const dict = I18N[lang] || I18N.zh;
   const fallback = I18N.zh[key] || key;
   return formatI18n(dict[key] || fallback, vars);
 }
 
-export function getAppSettings(app: any): any {
-  return app?.plugins?.plugins?.["zotero-citations"]?.settings;
+export function getAppSettings(app: App): LanguageSettingsLike | undefined {
+  return (app as AppWithPluginSettings).plugins?.plugins?.["zotero-citations"]?.settings;
 }
 
-export function appT(app: any, key: string, vars?: Record<string, any>): string {
+export function appT(app: App, key: string, vars?: Record<string, I18nValue>): string {
   return t(getAppSettings(app) || {}, key, vars);
 }

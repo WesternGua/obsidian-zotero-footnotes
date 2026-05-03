@@ -54,7 +54,7 @@ export interface CitationRef {
 
 // ── Constants ─────────────────────────────────────────────────────────────
 const KEY_PAT = "[A-Za-z0-9_:.-]+";
-const INLINE_RE_SRC = `\\^\\[<!-- zotero:(${KEY_PAT}):([^ ]*) --> ([\\s\\S]*?)\\]`;
+
 const ENDNOTE_DEF_RE_SRC = `^\\[\\^(\\d+)\\]: <!-- zotero:(${KEY_PAT}):([^ ]*) --> (.+)$`;
 const BIBLIOGRAPHY_START = "<!-- zotero-bibliography-start -->";
 const BIBLIOGRAPHY_END = "<!-- zotero-bibliography-end -->";

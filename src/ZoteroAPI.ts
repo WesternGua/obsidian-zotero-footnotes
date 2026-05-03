@@ -53,6 +53,8 @@ export interface InstalledStyle {
   title: string;
 }
 
+type JsonObject = Record<string, unknown>;
+
 // ── Locator formatting ─────────────────────────────────────────────────────
 const LOCATOR_PREFIX: Record<string, string> = {
   page: "p.",
@@ -104,7 +106,7 @@ export class ZoteroAPI {
     try {
       const r = await requestUrl({ url: `${this.baseUrl}/connector/ping`, method: "GET", throw: false });
       return r.status === 200;
-    } catch (e) {
+    } catch {
       return false;
     }
   }
@@ -141,7 +143,7 @@ export class ZoteroAPI {
           const files = fs.readdirSync(dir);
           if (files.some((f) => f.endsWith(".csl"))) return dir;
         }
-      } catch (e) {
+      } catch {
         // skip
       }
     }
@@ -158,7 +160,7 @@ export class ZoteroAPI {
             return stylesDir;
           }
         }
-      } catch (e) {
+      } catch {
         // skip
       }
     }
@@ -170,7 +172,7 @@ export class ZoteroAPI {
    * Read all installed CSL styles from Zotero's styles directory.
    * Parses each .csl file's <title> and <id> tags.
    */
-  async getInstalledStyles(): Promise<InstalledStyle[]> {
+  getInstalledStyles(): InstalledStyle[] {
     const stylesDir = this.locateZoteroStylesDir();
     if (!stylesDir) return [];
 
@@ -193,11 +195,11 @@ export class ZoteroAPI {
           }
           const title = titleMatch ? titleMatch[1].trim() : id;
           results.push({ id, title });
-        } catch (e) {
+        } catch {
           // skip unreadable files
         }
       }
-    } catch (e) {
+    } catch {
       return [];
     }
 
@@ -217,14 +219,16 @@ export class ZoteroAPI {
     );
     try {
       onReturn?.();
-    } catch (e) {}
+    } catch {
+      // ignore callback errors
+    }
 
     if (!rawText || rawText === "[]" || rawText === "null" || rawText === "{}") return [];
 
-    let parsed: any;
+    let parsed: unknown;
     try {
       parsed = JSON.parse(rawText);
-    } catch (e) {
+    } catch {
       return [];
     }
 
@@ -264,7 +268,8 @@ export class ZoteroAPI {
       if (r.status !== 200) throw new Error(`HTTP ${r.status}`);
       const d = r.json;
       if (d.error) throw new Error(d.error.message);
-      return (d.result ?? []).map((i: any) => this.normalizeAny(i)).filter((i: ZoteroItem) => !!i.title);
+      const result = Array.isArray(d.result) ? d.result : [];
+      return result.map((item) => this.normalizeAny(item)).filter((item) => !!item.title);
     } catch (err) {
       throw new ZoteroConnectionError(String(err));
     }
@@ -287,7 +292,9 @@ export class ZoteroAPI {
       for (const [itemKey, citeKey] of Object.entries(d.result)) {
         if (typeof citeKey === "string" && citeKey.trim()) map.set(itemKey, citeKey);
       }
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
     return map;
   }
 
@@ -319,7 +326,9 @@ export class ZoteroAPI {
           }
         }
       }
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
 
     // Fallback: via citation keys
     const missing = keys.filter((k) => !map.has(k));
@@ -357,7 +366,9 @@ export class ZoteroAPI {
           }
         }
       }
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
 
     // Fallback: local DB
     const stillMissing = keys.filter((k) => !map.has(k));
@@ -365,7 +376,9 @@ export class ZoteroAPI {
     try {
       const dbItems = await this.getItemsFromLocalDB(stillMissing);
       for (const [k, v] of dbItems) map.set(k, v);
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
 
     return map;
   }
@@ -374,7 +387,7 @@ export class ZoteroAPI {
     const map = new Map<string, ZoteroItem>();
     if (!keys.length) return map;
 
-    const sqlite = await this.locateZoteroSQLite();
+    const sqlite = this.locateZoteroSQLite();
     if (!sqlite) return map;
 
     const tmpDir = path.join(os.tmpdir(), "zotero-citations-db");
@@ -386,7 +399,7 @@ export class ZoteroAPI {
       fs.copyFileSync(sqlite, tmpDb);
       const journal = `${sqlite}-journal`;
       if (fs.existsSync(journal)) fs.copyFileSync(journal, tmpJournal);
-    } catch (e) {
+    } catch {
       return map;
     }
 
@@ -465,11 +478,13 @@ ORDER BY i.key, ic.orderIndex;`;
         };
         if (item.title) map.set(key, item);
       }
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
     return map;
   }
 
-  async locateZoteroSQLite(): Promise<string | null> {
+  locateZoteroSQLite(): string | null {
     const home = os.homedir();
     const candidates = [
       path.join(home, "Zotero", "zotero.sqlite"),
@@ -478,7 +493,9 @@ ORDER BY i.key, ic.orderIndex;`;
     for (const p of candidates) {
       try {
         if (fs.existsSync(p)) return p;
-      } catch (e) {}
+      } catch {
+        // ignore lookup failures and return partial results
+      }
     }
     return null;
   }
@@ -494,23 +511,31 @@ ORDER BY i.key, ic.orderIndex;`;
       const byKey = await this.getItemsByKeys([key]);
       const item = byKey.get(key);
       if (item?.title) return item;
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
     try {
       const byDb = await this.getItemsFromLocalDB([key]);
       const item = byDb.get(key);
       if (item?.title) return item;
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
     try {
       const results = await this.searchItems(key);
       const match = results.find((r) => r.key === key) ?? (results.length ? results[0] : null);
       if (match?.title) return match;
-    } catch (e) {}
+    } catch {
+      // ignore lookup failures and return partial results
+    }
     if (title) {
       try {
         const results = await this.searchItems(title);
         const match = results.find((r) => r.title.toLowerCase() === title.toLowerCase()) ?? results[0];
         if (match?.title) return match;
-      } catch (e) {}
+      } catch {
+        // ignore lookup failures and return partial results
+      }
     }
     return null;
   }
@@ -519,7 +544,7 @@ ORDER BY i.key, ic.orderIndex;`;
     return new Promise((resolve, reject) => {
       const req = nodeHttp.get(url, (res) => {
         const chunks: Buffer[] = [];
-        res.on("data", (c: any) => chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c)));
+        res.on("data", (chunk: Buffer | string) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)));
         res.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8").trim()));
         res.on("error", (e: Error) => reject(new ZoteroConnectionError(e.message)));
       });
@@ -531,20 +556,21 @@ ORDER BY i.key, ic.orderIndex;`;
     });
   }
 
-  private extractArray(data: any): any[] {
-    if (Array.isArray(data)) return data;
-    if (data && typeof data === "object") {
+  private extractArray(data: unknown): JsonObject[] {
+    if (Array.isArray(data)) return data.filter(isRecord);
+    if (isRecord(data)) {
       for (const key of ["items", "citationItems", "citations"]) {
-        if (Array.isArray(data[key])) return data[key];
+        const value = data[key];
+        if (Array.isArray(value)) return value.filter(isRecord);
       }
     }
     return [];
   }
 
-  private parseCaywItem(raw: any): CaywResult | null {
+  private parseCaywItem(raw: JsonObject): CaywResult | null {
     const locator = raw.locator ? String(raw.locator) : undefined;
     const locatorLabel = raw.label ? String(raw.label) : "page";
-    const itemSrc = raw.itemData && typeof raw.itemData === "object" ? raw.itemData : raw.item && typeof raw.item === "object" ? raw.item : raw;
+    const itemSrc = isRecord(raw.itemData) ? raw.itemData : isRecord(raw.item) ? raw.item : raw;
     const preferParentKey = itemSrc.itemType === "attachment" && itemSrc.parentItem ? String(itemSrc.parentItem) : "";
     let key = "";
     if (preferParentKey) key = preferParentKey;
@@ -568,18 +594,19 @@ ORDER BY i.key, ic.orderIndex;`;
   /**
    * Unified normalizer that handles BOTH native Zotero AND CSL-JSON formats.
    */
-  normalizeAny(r: any): ZoteroItem {
+  normalizeAny(r: unknown): ZoteroItem {
+    const record = isRecord(r) ? r : {};
     let key = "";
     for (const f of ["itemKey", "key", "citationKey"]) {
-      if (r[f]) { key = String(r[f]); break; }
+      if (record[f]) { key = String(record[f]); break; }
     }
-    if (!key && typeof r.id === "string") {
-      const m = String(r.id).match(/\/items\/([A-Z0-9]{8})(?:$|[/?#])/i);
+    if (!key && typeof record.id === "string") {
+      const m = String(record.id).match(/\/items\/([A-Z0-9]{8})(?:$|[/?#])/i);
       if (m) key = m[1];
     }
     for (const f of ["citation-key", "citekey", "id"]) {
       if (key) break;
-      if (r[f]) { key = String(r[f]); break; }
+      if (record[f]) { key = String(record[f]); break; }
     }
 
     const cslTypeMap: Record<string, string> = {
@@ -594,13 +621,13 @@ ORDER BY i.key, ic.orderIndex;`;
       "report": "report",
       "legal_case": "legal_case",
     };
-    const rawType = String(r.itemType ?? r.type ?? "");
+    const rawType = String(record.itemType ?? record.type ?? "");
     const itemType = cslTypeMap[rawType] ?? rawType;
-    const title = String(r.title ?? r.caseName ?? "");
+    const title = String(record.title ?? record.caseName ?? "");
 
     const creators: ZoteroCreator[] = [];
-    if (Array.isArray(r.creators) && r.creators.length > 0) {
-      for (const c of r.creators) {
+    if (Array.isArray(record.creators) && record.creators.length > 0) {
+      for (const c of record.creators.filter(isRecord)) {
         creators.push({
           firstName: String(c.firstName ?? c.given ?? ""),
           lastName: String(c.lastName ?? c.family ?? ""),
@@ -610,8 +637,9 @@ ORDER BY i.key, ic.orderIndex;`;
       }
     } else {
       for (const [field, ctype] of [["author", "author"], ["editor", "editor"]] as const) {
-        if (Array.isArray(r[field])) {
-          for (const a of r[field]) {
+        const rawCreators = record[field];
+        if (Array.isArray(rawCreators)) {
+          for (const a of rawCreators.filter(isRecord)) {
             creators.push({
               firstName: String(a.given ?? a.firstName ?? ""),
               lastName: String(a.family ?? a.lastName ?? ""),
@@ -624,17 +652,18 @@ ORDER BY i.key, ic.orderIndex;`;
     }
 
     let date: string | undefined;
-    if (r.date) {
-      const m = String(r.date).match(/\b(\d{4})\b/);
-      date = m ? m[1] : String(r.date);
+    if (record.date) {
+      const m = String(record.date).match(/\b(\d{4})\b/);
+      date = m ? m[1] : String(record.date);
     } else {
-      const issued = r.issued;
-      const y = issued?.["date-parts"]?.[0]?.[0];
+      const issued = isRecord(record.issued) ? record.issued : undefined;
+      const dateParts = issued?.["date-parts"];
+      const y = Array.isArray(dateParts) && Array.isArray(dateParts[0]) ? dateParts[0][0] : undefined;
       if (y) date = String(y);
     }
 
-    const publicationTitle = String(r.publicationTitle ?? r["container-title"] ?? r.journalAbbreviation ?? "") || undefined;
-    const authority = String(r.authority ?? r.court ?? "") || undefined;
+    const publicationTitle = String(record.publicationTitle ?? record["container-title"] ?? record.journalAbbreviation ?? "") || undefined;
+    const authority = String(record.authority ?? record.court ?? "") || undefined;
 
     return {
       key,
@@ -643,23 +672,27 @@ ORDER BY i.key, ic.orderIndex;`;
       creators,
       date,
       publicationTitle,
-      bookTitle: String(r.bookTitle ?? r["collection-title"] ?? "") || undefined,
-      publisher: String(r.publisher ?? "") || undefined,
-      place: String(r.place ?? r["publisher-place"] ?? "") || undefined,
-      volume: String(r.volume ?? "") || undefined,
-      issue: String(r.issue ?? "") || undefined,
-      pages: String(r.pages ?? r.page ?? "") || undefined,
-      edition: String(r.edition ?? "") || undefined,
-      DOI: String(r.DOI ?? "") || undefined,
-      URL: String(r.url ?? r.URL ?? "") || undefined,
-      ISBN: String(r.ISBN ?? "") || undefined,
-      thesisType: String(r.thesisType ?? "") || undefined,
-      university: String(r.university ?? r.school ?? "") || undefined,
-      conferenceName: String(r.conferenceName ?? r["event-title"] ?? "") || undefined,
+      bookTitle: String(record.bookTitle ?? record["collection-title"] ?? "") || undefined,
+      publisher: String(record.publisher ?? "") || undefined,
+      place: String(record.place ?? record["publisher-place"] ?? "") || undefined,
+      volume: String(record.volume ?? "") || undefined,
+      issue: String(record.issue ?? "") || undefined,
+      pages: String(record.pages ?? record.page ?? "") || undefined,
+      edition: String(record.edition ?? "") || undefined,
+      DOI: String(record.DOI ?? "") || undefined,
+      URL: String(record.url ?? record.URL ?? "") || undefined,
+      ISBN: String(record.ISBN ?? "") || undefined,
+      thesisType: String(record.thesisType ?? "") || undefined,
+      university: String(record.university ?? record.school ?? "") || undefined,
+      conferenceName: String(record.conferenceName ?? record["event-title"] ?? "") || undefined,
       authority,
       court: authority,
-      docketNumber: r.docketNumber ?? r.number ? String(r.docketNumber ?? r.number) : undefined,
-      extra: r.extra ?? r.note ? String(r.extra ?? r.note) : undefined,
+      docketNumber: record.docketNumber ?? record.number ? String(record.docketNumber ?? record.number) : undefined,
+      extra: record.extra ?? record.note ? String(record.extra ?? record.note) : undefined,
     };
   }
+}
+
+function isRecord(value: unknown): value is JsonObject {
+  return typeof value === "object" && value !== null;
 }
