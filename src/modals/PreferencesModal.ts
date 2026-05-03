@@ -71,7 +71,7 @@ export class PreferencesModal extends Modal {
     this.styleListEl = styleWrap.createDiv({ cls: "zotero-style-list" });
 
     // Load styles (dynamic from Zotero + fallback)
-    await this.loadStyles(false);
+    this.loadStyles(false);
 
     // ── Mode selector ──
     const modeWrap = contentEl.createDiv({ cls: "zotero-prefs-section" });
@@ -99,7 +99,7 @@ export class PreferencesModal extends Modal {
     applyBtn.addEventListener("click", () => { void this.applyToDocument(applyBtn); });
   }
 
-  private async loadStyles(showNotice: boolean): Promise<void> {
+  private loadStyles(showNotice: boolean): void {
     // First, populate from hardcoded fallback
     const settings = getAppSettings(this.app) || DEFAULT_SETTINGS;
     const fallbackStyles = CSL_STYLES.map((s) => ({
