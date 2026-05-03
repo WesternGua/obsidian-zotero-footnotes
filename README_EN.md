@@ -39,16 +39,9 @@
 
 ---
 
-## Development Build
+## Compatibility Note
 
-If you are working from the source tree directly:
-
-1. Run `npm install` in the plugin directory
-2. Run `npm run check` for TypeScript verification
-3. Run `npm run build` to regenerate `main.js`
-4. Reload the `zotero-citations` plugin in Obsidian
-
-See [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) for the full development and release workflow.
+This version has been developed and tested primarily on **macOS**. Linux and Windows have not yet been fully validated, so UI rendering, window focus behavior, native dialogs, and export-related workflows may behave differently and are not guaranteed to be perfectly compatible at this stage.
 
 ---
 

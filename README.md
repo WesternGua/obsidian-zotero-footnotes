@@ -41,16 +41,9 @@
 
 ---
 
-## 开发构建
+## 兼容性说明
 
-如果你使用当前源码目录进行开发或手动修复：
-
-1. 在插件目录执行 `npm install`
-2. 执行 `npm run check` 做 TypeScript 检查
-3. 执行 `npm run build` 生成 `main.js`
-4. 回到 Obsidian 后重新加载插件 `zotero-citations`
-
-更多开发/发布说明见 [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)。
+当前版本主要在 **macOS** 环境下开发与调试。Linux 与 Windows 平台目前尚未充分测试，因此界面显示、窗口聚焦、原生弹窗、导出链路等行为可能存在差异，暂时不能保证完全兼容。
 
 ---
 
