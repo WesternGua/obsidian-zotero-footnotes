@@ -47,28 +47,6 @@
 
 ---
 
-## 仓库结构
-
-- `src/` — TypeScript 源码
-- `assets/screenshots/` — README 截图资源
-- `docs/` — 开发与维护文档
-- `manifest.json` — Obsidian 插件清单
-- `versions.json` — 版本与最低 Obsidian 兼容版本映射
-- `main.js` — 构建产物；本目录作为实际插件目录时，Obsidian 直接加载它
-- `data.json` — 本地插件数据，不应纳入版本控制
-
----
-
-## GitHub 仓库建议
-
-如果后续把这个目录单独初始化为 GitHub 仓库，推荐保留当前布局，并：
-
-- 提交 `src/`、`manifest.json`、`versions.json`、`README*`、`CHANGELOG.md`
-- 忽略 `node_modules/`、`data.json`、`.DS_Store`
-- 通过 GitHub Actions 或本地 `npm run check && npm run build` 做构建验证
-
----
-
 ## 快速上手
 
 ### 1. 插入引用

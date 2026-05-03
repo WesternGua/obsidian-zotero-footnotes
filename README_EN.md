@@ -45,28 +45,6 @@ This version has been developed and tested primarily on **macOS**. Linux and Win
 
 ---
 
-## Repository Layout
-
-- `src/` — TypeScript source
-- `assets/screenshots/` — README image assets
-- `docs/` — development and maintenance docs
-- `manifest.json` — Obsidian plugin manifest
-- `versions.json` — compatibility map from plugin version to minimum Obsidian version
-- `main.js` — build artifact; Obsidian loads this directly when this folder is used as the live plugin directory
-- `data.json` — local plugin data and should not be version-controlled
-
----
-
-## GitHub Repo Notes
-
-If you later split this directory into its own GitHub repository, this layout can stay as-is. A typical setup is:
-
-- commit `src/`, `manifest.json`, `versions.json`, `README*`, and `CHANGELOG.md`
-- ignore `node_modules/`, `data.json`, and `.DS_Store`
-- validate with GitHub Actions or local `npm run check && npm run build`
-
----
-
 ## Quick Start
 
 ### 1. Insert a Citation
