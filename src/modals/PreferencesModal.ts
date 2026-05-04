@@ -40,7 +40,7 @@ export class PreferencesModal extends Modal {
     void this.renderContent();
   }
 
-  private async renderContent(): Promise<void> {
+  private renderContent(): void {
     const { contentEl } = this;
     contentEl.empty();
     contentEl.addClass("zotero-prefs-modal");
